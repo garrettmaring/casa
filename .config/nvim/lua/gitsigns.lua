@@ -1,3 +1,7 @@
+-- configuration for gitsigns plugin
+--
+-- @see https://github.com/lewis6991/gitsigns.nvim
+
 local M = {}
 local cmd = vim.cmd
 

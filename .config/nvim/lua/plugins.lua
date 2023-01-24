@@ -4,38 +4,31 @@
 vim.cmd [[packadd packer.nvim]]
 
 return require('packer').startup(function()
-  -- Packer can manage itself
-  use 'wbthomason/packer.nvim'
-
-  -- Simple plugins can be specified as strings
-  use 'rstacruz/vim-closer'
+  use 'wbthomason/packer.nvim' -- Packer can manage itself
+  use 'mhinz/vim-startify' -- cool vim startup screen
   use 'Soares/base16.nvim'
-  -- easy reloading  after editing vim configuration
-  use 'famiu/nvim-reload'
-  -- easier mapping settings
-  use "b0o/mapx.nvim"
-  -- image previewing
-  use "edluffy/hologram.nvim"
-  -- edge dark theme
-  use 'sainnhe/edge'
-  -- show context
-  use 'lewis6991/nvim-treesitter-context'
-  -- highlight definitions and usages
-  use 'nvim-treesitter/nvim-treesitter-refactor'
-  -- navigate around highlighting
-  use 'drybalka/tree-climber.nvim'
-  -- spell checker
-  use 'lewis6991/spellsitter.nvim'
-  -- commenting
-  use 'JoosepAlviste/nvim-ts-context-commentstring'
-  -- insert matching pair of quotes, brackets, etc.
-  use 'andymass/vim-matchup'
-  -- show registers
-  use "tversteeg/registers.nvim"
-  -- override vim's default cut (`dd` in Normal, etc.) behavior
-  use "svermeulen/vim-cutlass"
-  -- substitues with text objects
-  use "svermeulen/vim-subversive"
+  use 'famiu/nvim-reload' -- easy reloading  after editing vim configuration
+  use "b0o/mapx.nvim" -- easier mapping settings
+  use "edluffy/hologram.nvim" -- image previewing
+  use 'sainnhe/edge' -- edge dark theme
+  use 'nvim-treesitter/nvim-treesitter-refactor' -- highlight definitions and usages
+  use 'drybalka/tree-climber.nvim' -- navigate around highlighting
+  use 'lewis6991/spellsitter.nvim' -- spell checker
+  use 'andymass/vim-matchup' -- insert matching pair of quotes, brackets, etc.
+  use "svermeulen/vim-cutlass" -- override vim's default cut (`dd` in Normal, etc.) behavior
+  use "svermeulen/vim-subversive" -- substitues with text objects
+  use "windwp/nvim-autopairs" -- open/closing brackets, parentheses, braces etc.
+  use {'romgrk/fzy-lua-native', run = 'make'}
+  use "nathom/filetype.nvim" -- faster startup
+  use "triglav/vim-visual-increment"
+  use {'tpope/vim-dispatch', opt = true, cmd = {'Dispatch', 'Make', 'Focus', 'Start'}}
+  use 'tpope/vim-surround'
+  use 'preservim/nerdcommenter' -- commenting commenting
+  use 'mfussenegger/nvim-dap' -- debugger, breakpoints, step-through
+  use 'simrat39/rust-tools.nvim' -- Rust debugging
+  use 'edluffy/specs.nvim' -- animate cursor when moving
+  use 'kyazdani42/nvim-web-devicons' -- nicer icons for file trees, diagnostic lists, etc.
+
   -- easy motion (vimium style navigation)
   use {
     'phaazon/hop.nvim',
@@ -46,56 +39,41 @@ return require('packer').startup(function()
     end
   }
 
-  -- Lazy loading:
-  -- Load on specific commands
-  use {'tpope/vim-dispatch', opt = true, cmd = {'Dispatch', 'Make', 'Focus', 'Start'}}
-  use 'tpope/vim-surround'
-  use 'tpope/vim-commentary'
+  -- use 'JoosepAlviste/nvim-ts-context-commentstring' -- improve commenting in multi-langugage files (CSS-in-JS). is this working?
 
-  -- Load on a combination of conditions: specific filetypes or commands
-  -- Also run code after load (see the "config" key)
-  use {
-    'w0rp/ale',
-    ft = {'sh', 'zsh', 'bash', 'c', 'cpp', 'cmake', 'html', 'markdown', 'racket', 'vim', 'tex'},
-    cmd = 'ALEEnable',
-    config = 'vim.cmd[[ALEEnable]]'
-  }
+  -- TODO: linting with ale?
+  --use {
+    --'w0rp/ale',
+    --ft = {'sh', 'zsh', 'bash', 'c', 'cpp', 'cmake', 'html', 'markdown', 'racket', 'vim', 'tex'},
+    --cmd = 'ALEEnable',
+    --config = 'vim.cmd[[ALEEnable]]'
+  --}
 
-  -- Plugins can have dependencies on other plugins
-  use {
-    'haorenW1025/completion-nvim',
-    opt = true,
-    requires = {{'hrsh7th/vim-vsnip', opt = true}, {'hrsh7th/vim-vsnip-integ', opt = true}}
-  }
+  use_rocks 'penlight' -- helpful Lua functions for common programming patterns
+  use_rocks 'lua-resty-http' -- Lua http helpers
+  use_rocks 'lpeg' -- Lua regex helpers
 
-  -- You can specify rocks in isolation
-  use_rocks 'penlight'
-  use_rocks {'lua-resty-http', 'lpeg'}
+  use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'} -- preview markdown files in a browser page
 
-  -- Plugins can have post-install/update hooks
-  use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview'}
-
-  -- Post-install/update hook with call of vimscript function with argument
+  -- run our vim in the browser
   use { 'glacambre/firenvim', run = function() vim.fn['firenvim#install'](0) end }
 
-  -- Use dependency and run lua function after load
+  use 'folke/trouble.nvim' -- show diagnostics (pretty 💅)
+
+  -- add git to buffer, statusline, etc.
   use {
     'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' },
     config = function() require('gitsigns').setup() end
   }
 
-  -- You can specify multiple plugins in a single call
-  use {'tjdevries/colorbuddy.vim'}
+  use 'tjdevries/colorbuddy.vim'
 
   -- kitty navigation integration
-  use { 'knubie/vim-kitty-navigator' }
+  use 'knubie/vim-kitty-navigator'
 
   -- file tree
   use {
     'kyazdani42/nvim-tree.lua',
-    requires = {
-      'kyazdani42/nvim-web-devicons', -- optional, for file icon
-    },
     config = function() require'nvim-tree'.setup {
       view = {
         side = "right"
@@ -110,17 +88,11 @@ return require('packer').startup(function()
     } end
   }
 
-  -- copy & paste
-
-  use {
-    'romgrk/barbar.nvim',
-    requires = {'kyazdani42/nvim-web-devicons'}
-  }
+  use 'romgrk/barbar.nvim' -- a great buffer tab bar
 
   -- status line
   use {
     'nvim-lualine/lualine.nvim',
-    requires = { 'kyazdani42/nvim-web-devicons', opt = true },
     config = function() require'lualine'.setup {
       options = {
         theme = 'edge'
@@ -149,7 +121,7 @@ return require('packer').startup(function()
         max_file_lines = nil
      },
 
-     context_commentstring = {
+     context_commentstrind = {
         enable = true
      }
     } end
@@ -158,12 +130,11 @@ return require('packer').startup(function()
   -- file search
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.0',
-    -- or                            , branch = '0.1.x',
     requires = { {'nvim-lua/plenary.nvim'} }
   }
 
-  -- copilot
-  use 'github/copilot.vim'
+  use "SmiteshP/nvim-navic" -- show language specific context in status line
+  use 'lewis6991/nvim-treesitter-context' -- show context in winbar (ie within function or struct)
 
   -- language servers for syntax, autocomplete, status line, etc.
   use {
@@ -172,19 +143,63 @@ return require('packer').startup(function()
     'neovim/nvim-lspconfig'
   }
 
-  -- show language specific context in status line
+  use "hrsh7th/nvim-cmp" -- use for automcompletion engine
+  use "hrsh7th/cmp-nvim-lsp" -- use to provide the LSP source to autocomplete (cmp)
+  use "hrsh7th/cmp-path" -- use to autocomplete file & directory paths
+  use "hrsh7th/cmp-calc" -- use to evaluate/autocomplete mathematical expressions
+  use {'tzachar/cmp-fuzzy-buffer', requires = {'tzachar/fuzzy.nvim'}} -- use for better fuzzy buffer autocompletion
+  use { "KadoBOT/cmp-plugins", config = function () require("cmp-plugins").setup() end } -- neovim plugins autocomplete ("tpop" -> "tpope/vim-surround")
+  -- use to add snippets source to autocomplete via LuaSnip
   use {
-    "SmiteshP/nvim-navic",
-    requires = "neovim/nvim-lspconfig"
+    "saadparwaiz1/cmp_luasnip",
+    requires = "L3MON4D3/LuaSnip"
+  }
+  -- use to add more snippets to LuaSnip
+  use { "rafamadriz/friendly-snippets" }
+  -- git commit completion
+  use 'petertriho/cmp-git'
+  use 'hrsh7th/cmp-nvim-lsp-signature-help' -- use to automcomplete better function signatures
+
+  -- copilot
+  use {
+    "zbirenbaum/copilot-cmp",
+    requires = { "zbirenbaum/copilot.lua" },
+    cmd = "Copilot",
+    event = "VimEnter",
+    config = function()
+      vim.defer_fn(function()
+        require("copilot").setup({
+          filetypes = {
+            markdown = false
+          }
+        })
+      end, 100)
+    end,
   }
 
-  -- autocomplete
-  use { "hrsh7th/nvim-cmp" }
-  use { "hrsh7th/cmp-buffer" }
-  use { "hrsh7th/cmp-path" }
-  use { "saadparwaiz1/cmp_luasnip" }
-  use { "hrsh7th/cmp-nvim-lsp" }
-  use { "L3MON4D3/LuaSnip" } -- handling text completion insert when completion data is provided
-  use { "rafamadriz/friendly-snippets" }
+  -- use to add Rust/Cargo crates source to autocomplet
+  use {
+    'saecki/crates.nvim',
+    requires = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('crates').setup()
+    end,
+  }
+
+  use {
+    'David-Kunz/cmp-npm',
+    requires = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('cmp-npm').setup()
+    end,
+  }
+
+  -- visualize registers & their content
+  use {
+    "tversteeg/registers.nvim",
+    config = function()
+      require("registers").setup()
+    end,
+  }
 
 end)

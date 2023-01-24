@@ -45,6 +45,8 @@ alias mkcd=make_dir_cd
 
 # terminal (kitty) color theme
 eval "kitty @ set-colors --all --configured -c $CONFIG_HOME/kitty/colors/$(cat $CONFIG_HOME/.base16_theme).conf"
+# set kitty tab/window name to directory automagically (https://github.com/kovidgoyal/kitty/issues/930)
+precmd () {print -Pn "\e]0;%~\a"}
 
 # configuration files (casa)
 alias casa="edit $CASA_CONFIG/README.md"

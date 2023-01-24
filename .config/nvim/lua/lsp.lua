@@ -22,6 +22,13 @@ end
 lspconfig.sumneko_lua.setup({
   single_file_support = true,
   on_attach = on_attach, -- attach navic
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { 'use', 'vim', 'use_rocks' } -- define global namespaced keywords
+      }
+    }
+  }
 })
 
 -- typescript language server config
@@ -32,6 +39,12 @@ lspconfig.tsserver.setup({
 lspconfig.html.setup({})
 -- css language server config
 lspconfig.cssls.setup({})
+-- python language server config
+lspconfig.pyright.setup({})
+-- solidity/solang language server config
+lspconfig.solang.setup({})
+-- rust language server config
+lspconfig.rust_analyzer.setup({})
 
 -- add mappings when lsp attaches
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -70,14 +83,14 @@ vim.api.nvim_create_autocmd('LspAttach', {
     bufmap('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>')
     bufmap('x', '<F4>', '<cmd>lua vim.lsp.buf.range_code_action()<cr>')
 
-    -- Show diagnostics in a floating window
-    bufmap('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>')
+    -- Show diagnostics errors in a floating window
+    bufmap('n', 'ew', '<cmd>lua vim.diagnostic.open_float()<cr>')
 
     -- Move to the previous diagnostic
-    bufmap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>')
+    bufmap('n', '<C-p>', '<cmd>lua vim.diagnostic.goto_prev()<cr>')
 
     -- Move to the next diagnostic
-    bufmap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>')
+    bufmap('n', '<C-e>', '<cmd>lua vim.diagnostic.goto_next()<cr>')
   end
 })
 
