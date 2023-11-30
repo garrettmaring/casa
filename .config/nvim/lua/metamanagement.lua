@@ -1,0 +1,6 @@
+--- config & plugin management
+-- refresh configuration by reloading all modules
+vim.keymap.set('n', '<leader>mmr', "<cmd>Reload<cr> <bar> :echo 'hi'<cr>")
+-- refresh configuration & resync plugins
+vim.keymap.set('n', '<leader>mmrp', '<cmd>Reload<cr> <bar> PackerSync<cr>')
+

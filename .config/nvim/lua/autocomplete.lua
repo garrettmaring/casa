@@ -33,8 +33,8 @@ cmp.setup({
     {name = 'fuzzy_buffer', keyword_length = 3 }, -- complete with other words in buffer
     {name = 'calc', keyword_length = 3}, -- eval math
     {name = 'crates', keyword_length = 4}, -- cargo crates
-    {name = 'plugins', keyword_length = 4}, -- neovim plugins
     {name = 'npm', keyword_length = 4}, -- npm packages
+    {name = 'plugins', keyword_length = 4}, -- neovim plugins
   }),
 
   -- style completion UI
@@ -53,9 +53,9 @@ cmp.setup({
         path = '', -- filepath
         copilot = '', -- github copilot
         calc = '',
-        plugins = '', -- neovim plugins
         crates = '',
         npm = '',
+        plugins = '', -- neovim plugins
       }
 
       item.menu = menu_icon[entry.source.name]

@@ -21,8 +21,10 @@ require('telescope').setup{
 require('telescope').load_extension('fzf')
 -- require("telescope").load_extension("refactoring")
 
--- maps
+----- maps
 vim.keymap.set('n', '<leader>sf', builtin.find_files, {}) -- search files
-vim.keymap.set('n', '<leader>sc', builtin.live_grep, {}) -- search code
+vim.keymap.set('n', '<leader>ss', builtin.live_grep, {}) -- search source code
 vim.keymap.set('n', '<leader>sb', builtin.buffers, {}) -- search buffers
 vim.keymap.set('n', '<leader>st', builtin.help_tags, {}) -- search tags
+-- todo: open live_grep with word object under cursor
+-- vim.keymap.set('n', '<leader>sc', builtin.live_grep, {}) -- search under cursor source code

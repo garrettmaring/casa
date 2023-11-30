@@ -1,5 +1,4 @@
-require('providers')  -- neovim python providers
-require('settings') -- misc settings
+--require('providers')  -- neovim python providers
 require('maps') -- keybindings
 require('statusline')  -- custom statusline
 require('plugins')  -- packer plugins
@@ -23,3 +22,8 @@ require('splits') -- lickity-split splits
 require('refactoring') -- easy & robust refactoring
 require('replace') -- replacing seleted text (outside refactoring)
 require('media') -- images, videos, audio
+require('symbols')
+-- specifics for working on the workbench
+require("metamanagement")
+require('settings') -- misc settings
+require('alfred') -- there's nothing i don't

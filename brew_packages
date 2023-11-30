@@ -15,3 +15,5 @@ flyctl
 luarocks
 localstack
 jq
+wimlib
+rename

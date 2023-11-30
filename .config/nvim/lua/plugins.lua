@@ -1,11 +1,13 @@
 -- This file can be loaded by calling `lua require('plugins')` from your init.vim
 
+vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "14.2")
+
 -- Only required if you have packer configured as `opt`
 vim.cmd [[packadd packer.nvim]]
 
 return require('packer').startup(function()
   use 'wbthomason/packer.nvim' -- Packer can manage itself
-  use 'mhinz/vim-startify' -- cool vim startup screen
+  use 'nvim-lua/plenary.nvim' -- lua async
   use 'Soares/base16.nvim'
   use 'famiu/nvim-reload' -- easy reloading  after editing vim configuration
   use "b0o/mapx.nvim" -- easier mapping settings
@@ -22,6 +24,7 @@ return require('packer').startup(function()
   use "triglav/vim-visual-increment"
   use {'tpope/vim-dispatch', opt = true, cmd = {'Dispatch', 'Make', 'Focus', 'Start'}}
   use 'tpope/vim-surround'
+  use 'tpope/vim-unimpaired'
   use 'preservim/nerdcommenter' -- commenting commenting
   use 'mfussenegger/nvim-dap' -- debugger, breakpoints, step-through
   use 'simrat39/rust-tools.nvim' -- Rust debugging
@@ -30,6 +33,8 @@ return require('packer').startup(function()
   use 'jose-elias-alvarez/typescript.nvim' -- typescript
   use 'junegunn/goyo.vim' -- writing in vim
   use 'bfredl/nvim-ipy'
+  use 'simrat39/symbols-outline.nvim' -- symbol viewer
+  use 'mhinz/vim-startify' -- cool vim startup screen
 
   -- easy motion (vimium style navigation)
   use {
@@ -64,7 +69,7 @@ return require('packer').startup(function()
 
   -- add git to buffer, statusline, etc.
   use {
-    'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' },
+    'lewis6991/gitsigns.nvim',
     config = function() require('gitsigns').setup() end
   }
 
@@ -131,8 +136,7 @@ return require('packer').startup(function()
 
   -- searching
   use {
-    'nvim-telescope/telescope.nvim', tag = '0.1.0',
-    requires = { {'nvim-lua/plenary.nvim'} }
+    'nvim-telescope/telescope.nvim', tag = '0.1.0'
   }
 
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- faster searching
@@ -147,12 +151,23 @@ return require('packer').startup(function()
     'neovim/nvim-lspconfig'
   }
 
-  use "hrsh7th/nvim-cmp" -- use for automcompletion engine
+  use({
+    "hrsh7th/nvim-cmp", -- use for automcompletion engine
+    requires = {
+      {
+        "KadoBOT/cmp-plugins",
+        config = function()
+          require("cmp-plugins").setup({
+            files = { ".*\\.lua" }  -- default
+          })
+        end,
+      },
+    }
+  })
   use "hrsh7th/cmp-nvim-lsp" -- use to provide the LSP source to autocomplete (cmp)
   use "hrsh7th/cmp-path" -- use to autocomplete file & directory paths
   use "hrsh7th/cmp-calc" -- use to evaluate/autocomplete mathematical expressions
   use {'tzachar/cmp-fuzzy-buffer', requires = {'tzachar/fuzzy.nvim'}} -- use for better fuzzy buffer autocompletion
-  use { "KadoBOT/cmp-plugins", config = function () require("cmp-plugins").setup() end } -- neovim plugins autocomplete ("tpop" -> "tpope/vim-surround")
   -- use to add snippets source to autocomplete via LuaSnip
   use {
     "saadparwaiz1/cmp_luasnip",
@@ -164,27 +179,12 @@ return require('packer').startup(function()
   use 'petertriho/cmp-git'
   use 'hrsh7th/cmp-nvim-lsp-signature-help' -- use to automcomplete better function signatures
 
-  -- copilot
-  use {
-    "zbirenbaum/copilot-cmp",
-    requires = { "zbirenbaum/copilot.lua" },
-    cmd = "Copilot",
-    event = "VimEnter",
-    config = function()
-      vim.defer_fn(function()
-        require("copilot").setup({
-          filetypes = {
-            markdown = false
-          }
-        })
-      end, 100)
-    end,
-  }
+
+  use { 'sourcegraph/sg.nvim', run = 'nvim -l build/init.lua' }
 
   -- use to add Rust/Cargo crates source to autocomplet
   use {
     'saecki/crates.nvim',
-    requires = { 'nvim-lua/plenary.nvim' },
     config = function()
       require('crates').setup()
     end,
@@ -192,18 +192,17 @@ return require('packer').startup(function()
 
   use {
     'David-Kunz/cmp-npm',
-    requires = { 'nvim-lua/plenary.nvim' },
     config = function()
       require('cmp-npm').setup()
     end,
   }
 
   -- visualize registers & their content
-  use {
-    "tversteeg/registers.nvim",
-    config = function()
-      require("registers").setup()
-    end,
-  }
+  --use {
+    --"tversteeg/registers.nvim",
+    --config = function()
+      --require("registers").setup()
+    --end,
+  --}
 
 end)

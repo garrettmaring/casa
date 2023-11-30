@@ -5,7 +5,6 @@ local options = { noremap = true, silent = true }
 map('n', '<Space>', '', {})
 vim.g.mapleader = ' '  -- 'vim.g' sets global variables
 
-
 -- clear search highlight
 map('n', '<leader>ch', ':nohlsearch<cr>', options)
 

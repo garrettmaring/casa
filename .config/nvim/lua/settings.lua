@@ -1,14 +1,10 @@
 local o = vim.o
 local g = vim.g -- global options
 local wo = vim.wo
-local bo = vim.bo -- buffer-local options
 local cmd = vim.cmd
 
 -- mouse
 o.mouse = o.mouse .. 'a'
-
--- detect filetypes
-bo.filetype = on
 
 -- global options
 o.swapfile = true

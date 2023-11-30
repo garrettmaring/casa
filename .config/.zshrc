@@ -48,8 +48,8 @@ eval "kitty @ set-colors --all --configured -c $CONFIG_HOME/kitty/colors/$(cat $
 # set kitty tab/window name to directory automagically (https://github.com/kovidgoyal/kitty/issues/930)
 precmd () {print -Pn "\e]0;%~\a"}
 
-# configuration files (casa)
-alias casa="cd $CASA_CONFIG && edit $CASA_CONFIG/README.md"
+# open workbench config, must play music twerk music, hard rap, or on rare occasionals soulful r&b for the anti-mood
+alias twerk="cd $CASA_CONFIG && edit $CASA_CONFIG/README.md"
 
 # editor
 alias v="$EDITOR"
@@ -98,6 +98,8 @@ alias ni="npm install"
 alias nd="npm run dev"
 alias ns="npm run start"
 alias nb="npm run build"
+alias nt="npm run test"
+alias np="npm run pretty"
 
 # file navigation
 alias ..="cd .."
@@ -120,7 +122,8 @@ alias sand="cd $SANDBOX_HOME"
 export PATH="/opt/homebrew/opt/icu4c/bin:$PATH"
 export PATH="/opt/homebrew/opt/icu4c/sbin:$PATH"
 
-alias engi="PIPENV_PIPFILE=/Users/g/Developer/engi/cli pipenv run engi"
+alias engienv="source /Users/g/.local/share/virtualenvs/cli-L_QUJPw1/bin/activate"
+alias engi="PIPENV_VERBOSITY=-1 pipenv run engi"
 
 # https://igor.moomers.org/navigating-arch-on-osx
 alias brow='arch --x86_64 /usr/local/homebrew/bin/brew'
