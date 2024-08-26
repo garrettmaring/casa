@@ -234,15 +234,15 @@ return require('packer').startup(function()
 
   use {
     'yetone/avante.nvim',
-    event = 'BufRead', -- Use a valid event like 'BufRead' for lazy loading
-    build = 'make',    -- Optional build step
+    --event = 'BufRead', -- Use a valid event like 'BufRead' for lazy loading
+    --build = 'make',    -- Optional build step
     config = function()
-      -- Plugin configuration goes here
+      -- see copilot.lua for config
     end,
     requires = {
-      'nvim-tree/nvim-web-devicons',
+      --'nvim-tree/nvim-web-devicons', -- installed elsewhere
+      --'nvim-lua/plenary.nvim', -- installed elsewhere
       'stevearc/dressing.nvim',
-      'nvim-lua/plenary.nvim',
       'MunifTanjim/nui.nvim',
       {
         'MeanderingProgrammer/render-markdown.nvim',
