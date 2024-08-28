@@ -55,9 +55,10 @@ return require('packer').startup(function()
   --config = 'vim.cmd[[ALEEnable]]'
   --}
 
-  use_rocks 'penlight'                                                                            -- helpful Lua functions for common programming patterns
-  use_rocks 'lua-resty-http'                                                                      -- Lua http helpers
-  use_rocks 'lpeg'                                                                                -- Lua regex helpers
+  -- TODO: hererocks breaking when uncommented
+  --use_rocks 'penlight'                                                                            -- helpful Lua functions for common programming patterns
+  --use_rocks 'lua-resty-http'                                                                      -- Lua http helpers
+  --use_rocks 'lpeg'                                                                                -- Lua regex helpers
 
   use { 'iamcco/markdown-preview.nvim', run = 'cd app && yarn install', cmd = 'MarkdownPreview' } -- preview markdown files in a browser page
 
@@ -75,8 +76,8 @@ return require('packer').startup(function()
   use 'tjdevries/colorbuddy.vim'
 
   -- kitty navigation integration
-  --use {'knubie/vim-kitty-navigator', run = 'cp ./*.py ~/.config/kitty/' }
-  use { 'knubie/vim-kitty-navigator' }
+  use { 'knubie/vim-kitty-navigator', run = 'cp ./../../kitty/*.py ~/.config/kitty/' }
+  --use { 'knubie/vim-kitty-navigator' }
 
   -- file tree
   use {

@@ -3,7 +3,7 @@ local options = { noremap = true, silent = true }
 
 -- map the leader key
 map('n', '<Space>', '', {})
-vim.g.mapleader = ' '  -- 'vim.g' sets global variables
+vim.g.mapleader = ' ' -- 'vim.g' sets global variables
 
 -- clear search highlight
 map('n', '<leader>ch', ':nohlsearch<cr>', options)
@@ -14,13 +14,13 @@ map('n', '<leader>ch', ':nohlsearch<cr>', options)
 -- map('n', 'be', 'ge', options)
 
 -- quit mappings
-map('n', '<leader>qq', ':q<cr>', options) -- quit
-map('n', '<leader>qa', ':qa<cr>', options) -- quit all
-map('n', '<leader>qh', ':q!<cr>', options) -- quit hard
-map('n', '<leader>wq', ':wq<cr>', options) -- write quit
+map('n', '<leader>qq', ':q<cr>', options)    -- quit
+map('n', '<leader>qa', ':qa<cr>', options)   -- quit all
+map('n', '<leader>qh', ':q!<cr>', options)   -- quit hard
+map('n', '<leader>wq', ':wq<cr>', options)   -- write quit
 map('n', '<leader>wqa', ':wqa<cr>', options) -- write quit all
 
--- leave ('jump out of') insert mappings
+-- leave ('jump out of insert') insert mappings
 map('i', '<leader>jw', '<esc>:w<cr>', options)
 map('i', '<leader>jk', '<esc>', options)
 
