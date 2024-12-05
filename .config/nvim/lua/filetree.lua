@@ -20,9 +20,33 @@ map('n', '<leader>fc', ':NvimTreeClose<cr>', options)
 --autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 --augroup END
 --]])
---
+
+
+-- disable ctrl-k showing more detailed file information (remap it) as it conflict with pane-window movement
+local function my_on_attach(bufnr)
+  local api = require("nvim-tree.api")
+
+  local function opts(desc)
+    return {
+      desc = "nvim-tree: " .. desc,
+      buffer = bufnr,
+      noremap = true,
+      silent = true,
+      nowait = true
+    }
+  end
+
+  -- Load default mappings first
+  api.config.mappings.default_on_attach(bufnr)
+
+  -- Override the info/details mapping with your preferred key
+  vim.keymap.set('n', '<Your-Key>', api.node.show_info_popup, opts('Info'))
+  -- Remove the default Ctrl-K mapping
+  vim.keymap.del('n', '<C-k>', { buffer = bufnr })
+end
 
 nvim_tree.setup({
+  on_attach = my_on_attach,
   view = {
     side = "right"
   },

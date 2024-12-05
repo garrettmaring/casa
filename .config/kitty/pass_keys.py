@@ -17,26 +17,21 @@ logging.basicConfig(filename=str(log_file), level=logging.DEBUG,
 
 def is_window_vim(window, vim_id):
     window_pid = window.child.pid
-    logging.debug(f"Checking for Vim in process tree of PID {window_pid}")
 
     def check_process_tree(pid):
         try:
             process = psutil.Process(pid)
             if re.search(vim_id, process.name() or ' '.join(process.cmdline()), re.I):
-                logging.debug(f"Vim found in process: {pid}")
                 return True
 
             for child in process.children(recursive=True):
                 if re.search(vim_id, child.name() or ' '.join(child.cmdline()), re.I):
-                    logging.debug(f"Vim found in child process: {child.pid}")
                     return True
             
             return False
         except psutil.NoSuchProcess:
-            logging.debug(f"Process {pid} not found")
             return False
         except Exception as e:
-            logging.debug(f"Error checking process {pid}: {e}")
             return False
 
     return check_process_tree(window_pid)
