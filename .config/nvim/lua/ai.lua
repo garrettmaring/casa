@@ -21,7 +21,7 @@ require('avante').setup({
   gemini = {
     model = "gemini-exp-1206",
     --model = "gemini-1.5-pro-latest",
-    temperature = 0.00069,
+    --temperature = 0.00069,
     --max_tokens = 4096,
   },
   windows = {

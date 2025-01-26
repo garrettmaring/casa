@@ -3,14 +3,21 @@ local options = { noremap = true, silent = true }
 
 map('n', '<leader>ch', ':nohlsearch<cr>', options)
 
--- Toggle folds
-map('n', 'zz', 'za', options) -- Toggle current fold
-map('n', 'zo', 'zR', options) -- Open all folds
-map('n', 'zc', 'zM', options) -- Close all folds
+vim.opt.foldmethod = 'syntax'
 
--- Navigate between folds
-map('n', 'zj', 'zjzz', options) -- Move to next fold and center screen
-map('n', 'zk', 'zkzz', options) -- Move to previous fold and center screen
+-- Let's keep the original vim mappings as they are intuitive:
+-- zf: Create a fold (in manual fold mode)
+-- zo: Open current fold under cursor
+-- zc: Close current fold under cursor
+-- za: Toggle current fold under cursor (open if closed, close if open)
+-- zR: Open all folds in buffer
+-- zM: Close all folds in buffer
+
+-- Additional fold navigation with centering
+map('n', '<leader>zj', 'zjzz', options) -- Move to next fold and center screen
+map('n', '<leader>zk', 'zkzz', options) -- Move to previous fold and center screen
+map('n', '<leader>z[', '[zzz', options) -- Move to start of open fold and center
+map('n', '<leader>z]', ']zzz', options) -- Move to end of open fold and center
 
 -- Adjust fold levels
 map('n', '<leader>z+', ':lua for i=1,v:count1 do fold.increment() end<CR>', options)

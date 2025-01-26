@@ -10,12 +10,9 @@ map('n', '<leader>ff', ':NvimTreeFindFile<cr>', options)
 map('n', '<leader>fo', ':NvimTreeOpen<cr>', options)
 map('n', '<leader>fc', ':NvimTreeClose<cr>', options)
 
--- In your treesitter-context setup
-local function get_text_for_node(node, bufnr)
-  if not node then return "" end
-  local text = vim.treesitter.get_node_text(node, bufnr)
-  if not text then return "" end
-  return text
+if not vim.treesitter.get_node_text then
+  -- if legacy get_node_text is being called by some things, make sure it's patched through to latest version
+  vim.treesitter.get_node_text = vim.treesitter.query.get_node_text
 end
 
 -- FIX: open filetree when opening vim for the first time
