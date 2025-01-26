@@ -16,7 +16,7 @@ lsp_defaults.capabilities = vim.tbl_deep_extend(
 -- shared language setup config attach
 function LSP.on_attach(client, bufnr)
   if client.server_capabilities.documentSymbolProvider then
-    require("nvim-navic").attach(client, bufnr) -- navic shows  symbols in winbar
+    require("nvim-navic").attach(client, bufnr) -- navic shows symbols in winbar
   end
 end
 

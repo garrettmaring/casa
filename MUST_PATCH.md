@@ -96,3 +96,64 @@ local function get_text_for_node(node, bufnr)
 end
 ...
 ```
+
+# hologram
+
+Patch ~/.local/share/nvim/site/pack/packer/start/hologram.nvim/lua/hologram/init.lua to avoid some error.
+
+```lua
+function hologram.buf_render_images(buf, top, bot)
+  -- Check if the buffer is valid
+  if not vim.api.nvim_buf_is_valid(buf) then
+    --print("Hologram: Invalid buffer id: " .. tostring(buf))
+    return
+  end
+
+  -- Use pcall to catch any errors when getting extmarks
+  local ok, exts = pcall(vim.api.nvim_buf_get_extmarks, buf,
+    vim.g.hologram_extmark_ns,
+    { math.max(top - 1, 0), 0 },
+    { bot - 2, -1 },
+    {}
+  )
+
+  if not ok then
+    --print("Hologram: Error getting extmarks: " .. tostring(exts))
+    return
+  end
+
+  local curr_ids = {}
+  for _, ext in ipairs(exts) do
+    local id, row, col = unpack(ext)
+    if Image.instances[id] then
+      Image.instances[id]:display(row + 1, 0, buf, {})
+      curr_ids[#curr_ids + 1] = id
+    end
+  end
+
+  if prev_ids[buf] ~= nil then
+    for _, id in ipairs(prev_ids[buf]) do
+      if not vim.tbl_contains(curr_ids, id) and Image.instances[id] then
+        Image.instances[id]:delete(buf, {})
+      end
+    end
+  end
+  prev_ids[buf] = curr_ids
+end
+```
+
+Error I think was reproducible when creating a new file in treesitter filetree and then entering into it.
+
+```error message
+Error executing vim.schedule lua callback: ...te/pack/packer/start/hologram.nvim/lua/hologram/init.lua:47: Invalid buffer
+id: 46
+
+stack traceback:
+
+[C]: in function 'nvim_buf_get_extmarks'
+
+...te/pack/packer/start/hologram.nvim/lua/hologram/init.lua:47: in function 'buf_render_images'
+
+...te/pack/packer/start/hologram.nvim/lua/hologram/init.lua:17: in function <...te/pack/packer/start/hologram.nvim
+/lua/hologram/init.lua:17>
+```
