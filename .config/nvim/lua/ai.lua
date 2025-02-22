@@ -1,5 +1,8 @@
 require('avante_lib').load()
 
+-- default mapping <leader>aa :Avante
+-- default mapping <leader>at :AvanteToggle
+
 -- needed
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = { "Avante" }, -- Add other filetypes if needed
@@ -19,14 +22,17 @@ require('avante').setup({
     max_tokens = 8192,
   },
   gemini = {
-    model = "gemini-exp-1206",
+    model = "gemini-2.0-pro-exp-02-05",
     --model = "gemini-1.5-pro-latest",
-    --temperature = 0.00069,
+    temperature = 0.000069,
     --max_tokens = 4096,
   },
   windows = {
     position = "left",
-    width = 22 -- feelin' 22
+    width = 32, -- right bar (file tree) easn't percentage like this but now is (https://github.com/yetone/avante.nvim/blob/63136fd92f2f2e9cf91b231dc19ac2c95e3897ed/lua/avante/config.lua#L425C1-L426C1)
+    input = {
+      height = 13
+    }
   }
   --opts = {
   --}

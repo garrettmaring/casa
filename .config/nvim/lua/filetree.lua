@@ -10,6 +10,14 @@ map('n', '<leader>ff', ':NvimTreeFindFile<cr>', options)
 map('n', '<leader>fo', ':NvimTreeOpen<cr>', options)
 map('n', '<leader>fc', ':NvimTreeClose<cr>', options)
 
+-- Function to calculate width (16% of window width)
+-- this 16% matches Avante's sidebar percentage approach (32)
+-- @see ai.lua
+local function get_tree_width()
+  return math.ceil(vim.o.columns * (16 / 100))
+end
+
+
 if not vim.treesitter.get_node_text then
   -- if legacy get_node_text is being called by some things, make sure it's patched through to latest version
   vim.treesitter.get_node_text = vim.treesitter.query.get_node_text
@@ -48,10 +56,25 @@ local function my_on_attach(bufnr)
   vim.keymap.del('n', '<C-k>', { buffer = bufnr })
 end
 
+-- Auto resize tree when window is resized
+-- Auto resize tree when window is resized
+vim.api.nvim_create_autocmd("VimResized", {
+  group = vim.api.nvim_create_augroup("NvimTreeResize", { clear = true }),
+  callback = function()
+    require("nvim-tree.view").resize(get_tree_width())
+  end,
+})
+
 nvim_tree.setup({
   on_attach = my_on_attach,
   view = {
-    side = "right"
+    side = "right",
+    width = get_tree_width(),
+    -- Automatically resize tree when window is resized
+    float = {
+      enable = false,
+      quit_on_focus_loss = true,
+    },
   },
 
   renderer = {

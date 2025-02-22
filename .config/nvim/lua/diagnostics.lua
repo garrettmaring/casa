@@ -1,25 +1,94 @@
--- type errors, linting
---
--- <leader>dn
---
--- @see https://github.com/folke/trouble.nvim
-
 local trouble = require('trouble')
 local options = { silent = true, noremap = true }
 
 trouble.setup({
-  use_diagnostic_signs = true
+  position = "bottom",
+  height = 10,
+  width = 50,
+  mode = "workspace_diagnostics",
+  group = true,
+  padding = true,
+  fold_open = "",
+  fold_closed = "",
+  indent_lines = true,
+  auto_open = false,
+  auto_close = false,
+  auto_preview = true,
+  auto_fold = false,
+  action_keys = {
+    close = "q",
+    cancel = "<esc>",
+    refresh = "r",
+    jump = { "<cr>", "<tab>" },
+    open_split = { "<c-x>" },
+    open_vsplit = { "<c-v>" },
+    open_tab = { "<c-t>" },
+    jump_close = { "o" },
+    toggle_mode = "m",
+    toggle_preview = "P",
+    hover = "K",
+    preview = "p",
+    close_folds = { "zM", "zm" },
+    open_folds = { "zR", "zr" },
+    toggle_fold = { "zA", "za" },
+    previous = "k",
+    next = "j"
+  },
+  icons = {
+    --indent = {
+    --fold = true, -- enable fold icons
+    --open = "",
+    --closed = ""
+    --},
+    diagnostic = {
+      Error = " ",
+      Warn = " ",
+      Hint = " ",
+      Info = " "
+    },
+    kinds = {
+      Array = " ",
+      Boolean = " ",
+      Class = " ",
+      Color = " ",
+      Constant = " ",
+      Constructor = " ",
+      Enum = " ",
+      EnumMember = " ",
+      Event = " ",
+      Field = " ",
+      File = " ",
+      Folder = " ",
+      Function = " ",
+      Interface = " ",
+      Key = " ",
+      Keyword = " ",
+      Method = " ",
+      Module = " ",
+      Namespace = " ",
+      Null = "ﳠ ",
+      Number = " ",
+      Object = " ",
+      Operator = " ",
+      Package = " ",
+      Property = " ",
+      Reference = " ",
+      Snippet = " ",
+      String = " ",
+      Struct = " ",
+      Text = " ",
+      TypeParameter = " ",
+      Unit = " ",
+      Value = " ",
+      Variable = " "
+    }
+  }
 })
 
-vim.keymap.set("n", "<leader>dt", "<cmd>Trouble toggle<cr>", options)                -- toggle diagnostics
-vim.keymap.set("n", "<leader>dd", "<cmd>Trouble document_diagnostics<cr>", options)  -- document diagnostics
-vim.keymap.set("n", "<leader>dw", "<cmd>Trouble workspace_diagnostics<cr>", options) -- workspace diagnostics
-vim.keymap.set("n", "<leader>dl", "<cmd>Trouble loclist<cr>", options)               -- location list
-vim.keymap.set("n", "<leader>dq", "<cmd>Trouble quickfix<cr>", options)              -- quickfix list
-vim.keymap.set("n", "<leader>dr", "<cmd>Trouble lsp_references<cr>", options)        -- LSP references
-
--- TODO: remove default LSP references and use trouble?
--- TODO: use trouble for definitions too?
---vim.keymap.set("n", "gR", "<cmd>TroubleToggle lsp_references<cr>",
---{silent = true, noremap = true}
---)
+-- Key mappings
+vim.keymap.set("n", "<leader>dd", "<cmd>Trouble diagnostics toggle<cr>", options)
+vim.keymap.set("n", "<leader>dw", "<cmd>Trouble workspace_diagnostics toggle<cr>", options)
+vim.keymap.set("n", "<leader>do", "<cmd>Trouble document_diagnostics toggle<cr>", options)
+vim.keymap.set("n", "<leader>dl", "<cmd>Trouble loclist toggle<cr>", options)
+vim.keymap.set("n", "<leader>dq", "<cmd>Trouble quickfix toggle<cr>", options)
+vim.keymap.set("n", "<leader>dr", "<cmd>Trouble lsp_references toggle<cr>", options)
