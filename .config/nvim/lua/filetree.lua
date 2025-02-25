@@ -34,11 +34,18 @@ local function my_on_attach(bufnr)
   vim.keymap.set('n', '<Your-Key>', api.node.show_info_popup, opts('Info'))
   vim.keymap.del('n', '<C-k>', { buffer = bufnr })
 
-  -- Disable line numbers for this buffer
+  -- Enable line numbers but make them invisible for padding
   vim.api.nvim_buf_call(bufnr, function()
-    vim.opt_local.number = false
+    vim.opt_local.number = true
     vim.opt_local.relativenumber = false
     vim.opt_local.signcolumn = "no"
+
+    -- Set window-local highlights for this specific buffer only
+    local winid = vim.fn.bufwinid(bufnr)
+    if winid ~= -1 then
+      vim.api.nvim_win_set_option(winid, "winhl",
+        "Normal:NvimTreeNormal,EndOfBuffer:NvimTreeEndOfBuffer,LineNr:NvimTreeLineNr,CursorLineNr:NvimTreeCursorLineNr")
+    end
   end)
 end
 
@@ -49,8 +56,10 @@ local function set_nvim_tree_highlights()
   vim.cmd("highlight NvimTreeVertSplit guibg=#373943")
   vim.cmd("highlight NvimTreeIndentMarker guifg=#73797e guibg=#373943")
   vim.cmd("highlight NvimTreeRootFolder guibg=#373943")
-  -- Add a custom highlight for left padding
-  vim.cmd("highlight NvimTreeLeftPadding guibg=#373943")
+
+  -- Create custom highlights for NvimTree line numbers only
+  vim.cmd("highlight NvimTreeLineNr guifg=#373943 guibg=#373943")
+  vim.cmd("highlight NvimTreeCursorLineNr guifg=#373943 guibg=#373943")
 end
 
 nvim_tree.setup({
@@ -62,9 +71,9 @@ nvim_tree.setup({
       enable = false,
       quit_on_focus_loss = true,
     },
-    number = false,
-    relativenumber = false,
-    signcolumn = "no",
+    --number = false,
+    --relativenumber = false,
+    --signcolumn = "no",
   },
   renderer = {
     highlight_git = true,
@@ -87,12 +96,28 @@ nvim_tree.setup({
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "NvimTree",
   callback = function()
-    vim.opt_local.number = false
+    local bufnr = vim.api.nvim_get_current_buf()
+
+    -- Enable line numbers but make them invisible for padding
+    vim.opt_local.number = true
     vim.opt_local.relativenumber = false
     vim.opt_local.signcolumn = "no"
 
-    -- Add left padding using winhl
-    vim.wo.winhl = "Normal:NvimTreeNormal,EndOfBuffer:NvimTreeEndOfBuffer,SignColumn:NvimTreeLeftPadding"
+    -- Add custom highlights to window, using NvimTree-specific line number highlights
+    vim.wo.winhl =
+    "Normal:NvimTreeNormal,EndOfBuffer:NvimTreeEndOfBuffer,LineNr:NvimTreeLineNr,CursorLineNr:NvimTreeCursorLineNr"
+
+    -- Make sure these settings only apply to NvimTree buffer
+    vim.api.nvim_create_autocmd("BufLeave", {
+      buffer = bufnr,
+      callback = function()
+        -- Reset any window-specific highlights when leaving this buffer
+        if vim.fn.winbufnr(0) ~= bufnr then
+          vim.wo.winhl = ""
+        end
+      end,
+      once = true
+    })
 
     set_nvim_tree_highlights()
   end
