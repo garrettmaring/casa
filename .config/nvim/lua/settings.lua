@@ -1,7 +1,6 @@
 local o = vim.o
 local g = vim.g -- global options
 local wo = vim.wo
-local cmd = vim.cmd
 
 -- mouse
 o.mouse = o.mouse .. 'a'
@@ -21,15 +20,9 @@ o.shiftwidth = 2
 o.smartindent = true
 o.clipboard = 'unnamedplus'
 
--- theme
-o.termguicolors = true
-g.edge_style = 'default'
-g.edge_better_performance = 1
-cmd 'colorscheme edge'
-
 -- window-local options
 wo.number = false
-wo.wrap = true -- wrap text so no horizontal scroll
+wo.wrap = true      -- wrap text so no horizontal scroll
 wo.linebreak = true -- wrap text so no horizontal scroll
 
 -- set custom filetypes if not supported

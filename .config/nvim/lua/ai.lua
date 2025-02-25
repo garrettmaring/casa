@@ -1,58 +1,136 @@
-require('avante_lib').load()
+-- =======================
+-- ai.lua (Consolidated)
+-- =======================
 
--- default mapping <leader>aa :Avante
--- default mapping <leader>at :AvanteToggle
+--------------------------------------------------------------------------------
+-- 1) Load Avante
+--------------------------------------------------------------------------------
+require("avante_lib").load()
 
--- needed
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "Avante" }, -- Add other filetypes if needed
+-- By default Avante also has a mapping <leader>aa → :Avante, <leader>at → :AvanteToggle
+
+--------------------------------------------------------------------------------
+-- 2) Make Avante buffers modifiable if needed
+--------------------------------------------------------------------------------
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "Avante", "AvanteSelectedFiles", "AvanteInput" },
   callback = function()
     vim.bo.modifiable = true
-  end
+  end,
 })
 
-require('avante').setup({
+--------------------------------------------------------------------------------
+-- 3) Avante setup
+--------------------------------------------------------------------------------
+require("avante").setup({
   provider = "claude",
-  --provider = "gemini",
   claude = {
-    ----api_key_name = "cmd:bw get notes anthropic-api-key", -- the shell command must prefixed with `^cmd:(.*)`
-    --model = "claude-3-opus-20240229",
-    model = "claude-3-5-sonnet-latest",
+    model = "claude-3-7-sonnet-latest",
     temperature = 0.000069,
-    max_tokens = 8192,
+    max_tokens = 64000,
   },
-  gemini = {
-    model = "gemini-2.0-pro-exp-02-05",
-    --model = "gemini-1.5-pro-latest",
-    temperature = 0.000069,
-    --max_tokens = 4096,
-  },
+  -- If you use Gemini or others, you can specify them here:
+  -- gemini = { ... },
   windows = {
     position = "left",
-    width = 32, -- right bar (file tree) easn't percentage like this but now is (https://github.com/yetone/avante.nvim/blob/63136fd92f2f2e9cf91b231dc19ac2c95e3897ed/lua/avante/config.lua#L425C1-L426C1)
+    width = 32, -- The Avante sidebar width
     input = {
-      height = 13
+      height = 13,
     }
-  }
-  --opts = {
-  --}
-  --}
-  --provider = "gemini_exp",
-  --vendors = {
-  --["gemini_exp"] = {
-  --endpoint = "https://generativelanguage.googleapis.com/v1beta/models",
-  --model = "gemini-experimental",
-  --timeout = 20000, -- Timeout in milliseconds (20 seconds)
-  --temperature = 0,
-  --max_tokens = 8192,
-  --["local"] = false,
-  --},
-  --engi_local = {
-  --endpoint = "http://127.0.0.1:3000",
-  --model = "code-gemma",
-  --temperature = 0,
-  --max_tokens = 4096,
-  --["local"] = true,
-  --},
-  --}
+  },
+  -- Additional config as you wish...
 })
+
+--------------------------------------------------------------------------------
+-- 4) After your Edge color scheme is set, optionally tweak floating highlights
+--------------------------------------------------------------------------------
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "edge",
+  callback = function()
+    -- If Avante uses "NuiSplit"/"NuiPopupBorder"/"AvanteChat" for floats/popup,
+    -- these lines unify them. (Set bg, but leave fg = nil to preserve Edge text color.)
+    local bg_color = "#373943"
+
+    vim.cmd([[
+      hi NuiSplit guibg=NONE ctermbg=NONE
+      hi NuiPopupBorder guibg=NONE ctermbg=NONE
+      hi AvanteChat guibg=NONE ctermbg=NONE
+    ]])
+
+    vim.api.nvim_set_hl(0, "NuiSplit", { bg = bg_color })
+    vim.api.nvim_set_hl(0, "NuiPopupBorder", { bg = bg_color })
+    vim.api.nvim_set_hl(0, "AvanteChat", { bg = bg_color })
+  end,
+})
+
+--------------------------------------------------------------------------------
+-- 5) Make a custom highlight group for Avante sidebars’ background:
+--    We set ONLY 'bg', so text color remains from your Edge theme.
+--------------------------------------------------------------------------------
+vim.api.nvim_set_hl(0, "MyAvanteBg", { bg = "#373943" })
+
+--------------------------------------------------------------------------------
+-- 6) Combine FileType & BufWinEnter to ensure *all* Avante windows
+--    (including "AvanteInput") actually get "MyAvanteBg".
+--
+--    Pattern includes:
+--      - Avante (main chat)
+--      - AvanteSelectedFiles (file‐select)
+--      - AvanteInput (the text input)
+--      - AvanteChat (popups)
+--------------------------------------------------------------------------------
+local function set_avante_winhl(bufnr)
+  vim.schedule(function()
+    local winid = vim.fn.bufwinid(bufnr)
+    if winid ~= -1 then
+      -- Override Normal/EndOfBuffer to get a uniform background
+      vim.api.nvim_win_set_option(winid, "winhighlight", table.concat({
+        "Normal:MyAvanteBg",
+        "EndOfBuffer:MyAvanteBg",
+        -- If you see any leftover highlights (SignColumn, CursorLine, etc.),
+        -- you can add them here as well, e.g. "SignColumn:MyAvanteBg".
+      }, ","))
+    end
+  end)
+end
+
+-- 6A) Using FileType
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "Avante", "AvanteSelectedFiles", "AvanteInput", "AvanteChat" },
+  callback = function(ctx)
+    set_avante_winhl(ctx.buf)
+  end,
+})
+
+-- 6B) Using BufWinEnter
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  callback = function(ctx)
+    local ft = vim.bo[ctx.buf].filetype
+    if ft == "Avante" or ft == "AvanteSelectedFiles"
+        or ft == "AvanteInput" or ft == "AvanteChat" then
+      set_avante_winhl(ctx.buf)
+    end
+  end,
+})
+
+--------------------------------------------------------------------------------
+-- 7) If Avante uses NormalFloat/FloatBorder for certain floating windows:
+--------------------------------------------------------------------------------
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "AvanteChat",
+  callback = function(ctx)
+    vim.schedule(function()
+      local winid = vim.fn.bufwinid(ctx.buf)
+      if winid ~= -1 then
+        vim.api.nvim_win_set_option(winid, "winhighlight",
+          "NormalFloat:MyAvanteBg,FloatBorder:MyAvanteBg"
+        )
+      end
+    end)
+  end,
+})
+
+--------------------------------------------------------------------------------
+-- That’s it! Now AvanteInput, Avante, AvanteSelectedFiles, and AvanteChat
+-- all share the #373943 background, leaving text color alone.
+--------------------------------------------------------------------------------

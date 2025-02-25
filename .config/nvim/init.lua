@@ -3,7 +3,7 @@ vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "14.2")
 
 require('packer.luarocks').install_commands()
 require("load_env")
-
+require("colors")
 require('providers')      -- neovim python providers
 require('maps')           -- keybindings
 require('statusline')     -- custom statusline

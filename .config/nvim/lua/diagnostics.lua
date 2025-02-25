@@ -1,3 +1,5 @@
+-- need to learn this code more, was generate from deep research on good trouble config
+
 local trouble = require('trouble')
 local options = { silent = true, noremap = true }
 
@@ -46,7 +48,7 @@ trouble.setup({
       Hint = " ",
       Info = " "
     },
-    kinds = {
+    kinds = { -- what is all this...
       Array = " ",
       Boolean = " ",
       Class = " ",
@@ -85,7 +87,56 @@ trouble.setup({
   }
 })
 
+-- Function to copy current file diagnostics to clipboard
+local function copy_file_diagnostics()
+  local diagnostics = vim.diagnostic.get(0) -- 0 means current buffer
+  if #diagnostics == 0 then
+    vim.notify("No diagnostics found", vim.log.levels.INFO)
+    return
+  end
+
+  -- Sort diagnostics by line and column
+  table.sort(diagnostics, function(a, b)
+    if a.lnum == b.lnum then
+      return a.col < b.col
+    end
+    return a.lnum < b.lnum
+  end)
+
+  -- Convert severity numbers to readable text
+  local severity_map = {
+    [1] = "Error",
+    [2] = "Warning",
+    [3] = "Info",
+    [4] = "Hint"
+  }
+
+  -- Format each diagnostic
+  local lines = {
+    string.format("Diagnostics for %s:", vim.fn.expand("%:p")),
+    string.format("Total: %d", #diagnostics),
+    "---"
+  }
+
+  for _, d in ipairs(diagnostics) do
+    local line = string.format(
+      "[%s] Line %d:%d - %s",
+      severity_map[d.severity] or "Unknown",
+      d.lnum + 1,
+      d.col + 1,
+      d.message:gsub("\n", " ")
+    )
+    table.insert(lines, line)
+  end
+
+  -- Copy to clipboard
+  vim.fn.setreg('+', table.concat(lines, '\n'))
+  vim.notify("Diagnostics copied to clipboard", vim.log.levels.INFO)
+end
+
 -- Key mappings
+vim.keymap.set("n", "<leader>dy", copy_file_diagnostics,
+  { desc = "Copy file diagnostics to clipboard", silent = true, noremap = true })
 vim.keymap.set("n", "<leader>dd", "<cmd>Trouble diagnostics toggle<cr>", options)
 vim.keymap.set("n", "<leader>dw", "<cmd>Trouble workspace_diagnostics toggle<cr>", options)
 vim.keymap.set("n", "<leader>do", "<cmd>Trouble document_diagnostics toggle<cr>", options)
