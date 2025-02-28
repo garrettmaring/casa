@@ -78,7 +78,6 @@ return require('packer').startup(function()
 
   -- kitty navigation integration
   use { 'knubie/vim-kitty-navigator', run = 'cp ./../../kitty/*.py ~/.config/kitty/' }
-  --use { 'knubie/vim-kitty-navigator' }
 
   -- file tree
   use 'kyazdani42/nvim-tree.lua'
@@ -230,6 +229,7 @@ return require('packer').startup(function()
       --'nvim-lua/plenary.nvim', -- installed elsewhere
       'stevearc/dressing.nvim',
       'MunifTanjim/nui.nvim',
+      "HakonHarnes/img-clip.nvim",
       {
         'MeanderingProgrammer/render-markdown.nvim',
         ft = { 'markdown', 'Avante' }, -- Lazy load based on file type
