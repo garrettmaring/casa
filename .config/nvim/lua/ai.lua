@@ -27,10 +27,13 @@ require("avante").setup({
   claude = {
     model = "claude-3-7-sonnet-latest",
     temperature = 0.000069,
-    max_tokens = 64000,
+    max_tokens = 64000, -- add for 3.7
   },
-  -- If you use Gemini or others, you can specify them here:
-  -- gemini = { ... },
+  gemini = {
+    --model = "gemini-2.0-pro-exp",
+    model = 'gemini-2.0-flash-thinking-exp-01-21',
+  },
+  -- ui
   windows = {
     position = "left",
     width = 32, -- The Avante sidebar width
@@ -39,6 +42,24 @@ require("avante").setup({
     }
   },
   -- Additional config as you wish...
+  dual_boost = {
+    enabled = false,
+    first_provider = "openai",
+    second_provider = "claude",
+    prompt =
+    "Based on the two reference outputs below, generate a response that incorporates elements from both but reflects your own judgment and unique perspective. Do not provide any explanation, just give the response directly. Reference Output 1: [{{provider1_output}}], Reference Output 2: [{{provider2_output}}]",
+    timeout = 60000, -- Timeout in milliseconds
+  },
+  behaviour = {
+    auto_suggestions = false, -- Experimental stage
+    auto_set_highlight_group = true,
+    auto_set_keymaps = true,
+    auto_apply_diff_after_generation = true, -- default: false
+    support_paste_from_clipboard = false,
+    minimize_diff = true,                    -- Whether to remove unchanged lines when applying a code block
+    enable_token_counting = true,            -- Whether to enable token counting. Default to true.
+    enable_cursor_planning_mode = false,     -- Whether to enable Cursor Planning Mode. Default to false.
+  },
 })
 
 --------------------------------------------------------------------------------

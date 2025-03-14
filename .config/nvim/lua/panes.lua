@@ -51,9 +51,10 @@ map('t', '<C-k>', function() smart_navigate('k') end, opts)
 map('t', '<C-l>', function() smart_navigate('l') end, opts)
 
 -- Direct Kitty navigation commands (can be used if needed)
+-- not to conflict with 'kwuick' commands which are <leader>k- prefixed
 vim.cmd([[
-  nnoremap <silent> <leader>kh :KittyNavigateLeft<CR>
-  nnoremap <silent> <leader>kj :KittyNavigateDown<CR>
-  nnoremap <silent> <leader>kk :KittyNavigateUp<CR>
-  nnoremap <silent> <leader>kl :KittyNavigateRight<CR>
+  nnoremap <silent> <leader>kih :KittyNavigateLeft<CR>
+  nnoremap <silent> <leader>kij :KittyNavigateDown<CR>
+  nnoremap <silent> <leader>kik :KittyNavigateUp<CR>
+  nnoremap <silent> <leader>kil :KittyNavigateRight<CR>
 ]])

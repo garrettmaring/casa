@@ -8,8 +8,9 @@ vim.wo.numberwidth = 2
 -- write 'kuick'
 map('i', '<leader>kw', '<esc>:w<cr>', options)
 map('n', '<leader>kw', ':w<cr>', options)
--- jump (out of insert) 'kuick'
+-- jump (out of insert) 'kuick' (either way)
 map('i', '<leader>kj', '<esc>', options)
+map('i', '<leader>jk', '<esc>', options)
 
 -- replace
 -- substitues with text objects
