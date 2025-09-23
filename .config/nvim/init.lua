@@ -8,7 +8,7 @@ require('providers')      -- neovim python providers
 require('maps')           -- keybindings
 require('statusline')     -- custom statusline
 require('plugins')        -- packer plugins
-require('_lsp')            -- language servers
+require('lsp')            -- language servers
 require('autocomplete')   -- completion
 require('snippets')       -- snippet settings
 require('search')         -- searching
