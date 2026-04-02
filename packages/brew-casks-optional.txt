@@ -1,0 +1,3 @@
+# Large GUI/runtime apps that are useful on this machine, but are not required
+# for Casa's shell/editor configuration itself.
+orbstack

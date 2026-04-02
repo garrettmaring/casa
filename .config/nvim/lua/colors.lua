@@ -5,6 +5,6 @@ local cmd = vim.cmd
 o.termguicolors = true
 
 -- base theme
-cmd 'colorscheme edge'
 g.edge_style = 'default'
 g.edge_better_performance = 1
+pcall(cmd, 'colorscheme edge')

@@ -1,8 +1,7 @@
 local function load_env_file(filepath)
   local file = io.open(filepath, "r")
   if not file then
-    print("Could not open .env file: " .. filepath)
-    return
+    return false
   end
 
   for line in file:lines() do
@@ -23,10 +22,14 @@ local function load_env_file(filepath)
   end
 
   file:close()
+  return true
 end
 
--- Load the .env file (adjust the path as necessary)
-load_env_file(vim.fn.stdpath('config') .. '/.env')
+local config_dir = vim.fn.stdpath('config')
+
+-- Load repo defaults first, then local-only overrides.
+load_env_file(config_dir .. '/.env')
+load_env_file(config_dir .. '/.env.local')
 
 -- ---------------------------------------------------------------------------
 -- Ensure Mason-installed binaries are on PATH so that Neovim can spawn the
@@ -39,4 +42,3 @@ local mason_bin = vim.fn.stdpath('data') .. '/mason/bin'
 if not tostring(vim.env.PATH):find(mason_bin, 1, true) then
   vim.env.PATH = mason_bin .. ':' .. vim.env.PATH
 end
-

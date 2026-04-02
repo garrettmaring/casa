@@ -1,3 +1,2 @@
-require 'treesitter-context'.setup {
-  on_attach = require('lsp').on_attach,
-}
+-- treesitter-context loads this table from plugins.lua after the plugin is ready.
+return {}

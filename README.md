@@ -1,5 +1,30 @@
 # 🏡 benchi
 
+## Bootstrap
+
+Fresh machine:
+
+```sh
+./scripts/bootstrap-from-github.sh
+```
+
+Existing checkout:
+
+```sh
+./scripts/bootstrap.sh
+```
+
+The bootstrap flow now does four things end to end:
+
+1. installs system packages, native apps, and language/toolchain managers
+2. links Casa-managed config into `~/.config` and the home-directory entrypoints that still need to exist (`~/.zshrc`, `~/.zshenv`, `~/.tmux.conf`, etc.)
+3. provisions Neovim dependencies, Python provider envs, Node globals, and fonts
+4. keeps Casa as a normal git checkout in `~/Developer/casa`
+
+Package manifests live under [`packages/`](packages/). Native apps are driven by [`packages/apps.txt`](packages/apps.txt) and per-app installers under [`scripts/apps/`](scripts/apps/). The bootstrap scripts treat these manifests as the source of truth instead of the old one-off `brew_packages`/`package.json` files.
+
+Manual follow-up items that are still intentionally not automated are documented in [`packages/manual-setup.txt`](packages/manual-setup.txt).
+
 [Project Bootstrap Notion](https://www.notion.so/Project-Bootstrap-6b9156f85daa49bda8d53a46b34500e1)
 
 ## Vim Configuration
@@ -66,5 +91,3 @@ Resigning kitty to allow for sourcing packages from .venv. Now can install anyth
 source ~/.workbench/bin/activate
 pip install psutil
 ```
-
-

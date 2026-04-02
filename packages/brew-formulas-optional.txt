@@ -1,0 +1,7 @@
+# Language/runtime ecosystems that Mason can integrate with, but that Casa
+# does not require for its core shell/editor setup.
+composer
+go
+julia
+openjdk
+php

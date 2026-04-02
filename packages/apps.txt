@@ -1,0 +1,2 @@
+# Native apps with dedicated installers under scripts/apps/
+kitty

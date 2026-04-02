@@ -5,7 +5,17 @@
 --------------------------------------------------------------------------------
 -- 1) Load Avante
 --------------------------------------------------------------------------------
-require("avante_lib").load()
+local has_avante_lib, avante_lib = pcall(require, "avante_lib")
+if not has_avante_lib then
+  return
+end
+
+avante_lib.load()
+
+local has_avante, avante = pcall(require, "avante")
+if not has_avante then
+  return
+end
 
 -- By default Avante also has a mapping <leader>aa → :Avante, <leader>at → :AvanteToggle
 
@@ -22,7 +32,7 @@ vim.api.nvim_create_autocmd("FileType", {
 --------------------------------------------------------------------------------
 -- 3) Avante setup
 --------------------------------------------------------------------------------
-require("avante").setup({
+avante.setup({
   provider = "claude",
   cursor_applying_provider = 'groq',
 

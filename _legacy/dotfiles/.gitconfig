@@ -1,0 +1,16 @@
+[user]
+	name = Garrett Maring
+	email = garrett.maring@gmail.com
+[colorl]
+	ui = auto
+[http]
+	sslVerify = false
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[alias]
+  revert-file = !sh ~/Code/dotfiles/scripts/gitFileRevert.sh
+[core]
+  hooksPath = "/Users/garrettmaring/.hooks"

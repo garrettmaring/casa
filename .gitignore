@@ -1,0 +1,9 @@
+.DS_Store
+nvim.log
+.config/.DS_Store
+.config/.zshenv.local
+.config/kitty/.DS_Store
+.config/nvim/.env
+.config/nvim/.env.local
+.config/nvim/bin/
+.config/nvim/plugin/packer_compiled.lua

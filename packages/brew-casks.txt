@@ -1,0 +1,2 @@
+# GUI + app-managed tooling
+miniforge

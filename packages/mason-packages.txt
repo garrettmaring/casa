@@ -1,0 +1,7 @@
+lua-language-server
+html-lsp
+css-lsp
+pyright
+rust-analyzer
+tailwindcss-language-server
+typescript-language-server

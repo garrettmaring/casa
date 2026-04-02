@@ -1,0 +1,24 @@
+# Still manual by design
+#
+# 1. Authenticate CLIs and services after bootstrap:
+#    - gh auth login
+#    - claude / Amazon Q / any AI CLI you expect from shell aliases
+#    - OrbStack, Docker, LocalStack, Fly.io, etc.
+#
+# 2. If you want the local Avante plugin integration, clone:
+#    ~/Developer/engi/engi.nvim
+#
+# 3. If you want Kitty to load Python packages from a local venv, the
+#    codesigning/entitlements flow in README.md is still manual.
+#
+# 4. macOS GUI preferences such as font selection, Finder defaults, and any
+#    launch-services overrides are not modified automatically.
+#
+# 5. Optional large GUI/runtime installs live in:
+#    packages/brew-formulas-optional.txt
+#    packages/brew-casks-optional.txt
+#    Run CASA_INSTALL_OPTIONAL_FORMULAS=1 CASA_INSTALL_OPTIONAL_CASKS=1 ./scripts/bootstrap.sh if you want them.
+#
+# 6. Native app installers live in:
+#    packages/apps.txt
+#    scripts/apps/install-*.sh

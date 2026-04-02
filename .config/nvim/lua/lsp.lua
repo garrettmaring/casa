@@ -29,19 +29,23 @@ end
 -- Setup mason (if needed)
 mason.setup()
 
+local ensure_installed = {
+  "lua_ls",
+  "html",
+  "cssls",
+  "pyright",
+  "rust_analyzer",
+  "tailwindcss",
+  "ts_ls",
+}
+
+if vim.fn.executable("dotnet") == 1 then
+  table.insert(ensure_installed, "csharp_ls")
+end
+
 -- Setup mason-lspconfig with ensure_installed and optional automatic_enable
 mason_lspconfig.setup({
-  ensure_installed = {
-    "solidity-language-server",
-    "lua_ls",
-    "html",
-    "cssls",
-    "pyright",
-    "rust_analyzer",
-    "tailwindcss",
-    "csharp_ls",
-    "tsserver",
-  },
+  ensure_installed = ensure_installed,
   -- If you want to disable automatic enabling for some servers or altogether:
   -- automatic_enable = true, -- default
   -- automatic_enable = { exclude = { "rust_analyzer", "tsserver" } },
@@ -80,8 +84,14 @@ local function on_attach(client, bufnr)
   bufmap("n", "gi", vim.lsp.buf.implementation, "Implementation")
   bufmap("n", "<leader>rn", vim.lsp.buf.rename, "Rename")
   bufmap("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
-  -- add more as you like...
+
+  if client.name == "rust_analyzer" then
+    bufmap("n", "<D-space>", vim.lsp.buf.hover, "Rust Hover")
+    bufmap("n", "<Leader>a", vim.lsp.buf.code_action, "Rust Code Action")
+  end
 end
+
+M.on_attach = on_attach
 
 -- Use vim.lsp.config for custom server settings when supported
 -- Fallback: for servers that need special settings, configure individually
@@ -152,7 +162,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 -- Any other handlers/customization like signing diagnostic symbols, hover borders etc.
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
+  config = vim.tbl_deep_extend("force", config or {}, { border = "rounded" })
+  return vim.lsp.handlers.hover(err, result, ctx, config)
+end
+
+vim.lsp.handlers["textDocument/signatureHelp"] = function(err, result, ctx, config)
+  config = vim.tbl_deep_extend("force", config or {}, { border = "rounded" })
+  return vim.lsp.handlers.signature_help(err, result, ctx, config)
+end
 
 return M

@@ -2,9 +2,16 @@
 --
 -- @see https://github.com/simrat39/rust-tools.nvim
 
-local rt = require("rust-tools")
+local ok, rt = pcall(require, "rust-tools")
+if not ok then
+  return
+end
 
-rt.setup({
+if vim.fn.has("nvim-0.11") == 1 then
+  return
+end
+
+local setup_ok, err = pcall(rt.setup, {
   server = {
     on_attach = function(_, bufnr)
       -- Hover actions
@@ -14,3 +21,9 @@ rt.setup({
     end,
   },
 })
+
+if not setup_ok then
+  vim.schedule(function()
+    vim.notify(("Skipping rust-tools setup: %s"):format(err), vim.log.levels.WARN)
+  end)
+end

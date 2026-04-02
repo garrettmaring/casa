@@ -4,6 +4,8 @@
 vim.cmd [[packadd packer.nvim]]
 
 return require('packer').startup(function()
+  local local_avante_path = vim.fn.expand("~/Developer/engi/engi.nvim")
+
   use 'wbthomason/packer.nvim'     -- Packer can manage itself
   -- system
   use 'neovim/nvim-lspconfig'
@@ -110,33 +112,7 @@ return require('packer').startup(function()
   }
 
   -- syntax highlighting, refactoring
-  use {
-    'nvim-treesitter/nvim-treesitter',
-    run = ':TSUpdate',
-    config = function()
-      require 'nvim-treesitter'.setup {
-        ensure_installed = "all",
-
-        hightlight = {
-          enable = true
-        },
-
-        indent = {
-          enable = true
-        },
-
-        rainbow = {
-          enable = true,
-          extended_mode = true, -- html tags
-          max_file_lines = nil
-        },
-
-        context_commentstrind = {
-          enable = true
-        }
-      }
-    end
-  }
+  use 'nvim-treesitter/nvim-treesitter'
 
   use {
     "ThePrimeagen/refactoring.nvim",
@@ -155,29 +131,21 @@ return require('packer').startup(function()
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- faster searching
 
   use "SmiteshP/nvim-navic"                                        -- show language specific context in status line
-  use 'lewis6991/nvim-treesitter-context'                          -- show context in winbar (ie within function or struct)
+  use {
+    'nvim-treesitter/nvim-treesitter-context',
+    config = function()
+      require('treesitter-context').setup(require('winbar'))
+    end,
+  }                                                                -- sticky syntax context at top of window
 
   -- ╭──────────────────────────────────────────────────────────────╮
   -- │  LSP and external tooling installer (Mason)                 │
   -- ╰──────────────────────────────────────────────────────────────╯
 use {
-  'neovim/nvim-lspconfig'
-}
-use {
   'williamboman/mason.nvim'
 }
 use {
   'williamboman/mason-lspconfig.nvim',
-  requires = { 'neovim/nvim-lspconfig' }
-}
-use {
-  'simrat39/rust-tools.nvim',
-  requires = { 'neovim/nvim-lspconfig', 'williamboman/mason-lspconfig.nvim' }
-}
--- For Tailwind LSP wrapper plugins (if used), same pattern
-use {
-  'tailwindlabs/tailwindcss-language-server',  -- if this is a plugin
-  -- or your plugin doing enhancements/etc.
   requires = { 'neovim/nvim-lspconfig' }
 }
 
@@ -202,7 +170,12 @@ use {
   -- use to add snippets source to autocomplete via LuaSnip
   use {
     "saadparwaiz1/cmp_luasnip",
-    requires = "L3MON4D3/LuaSnip"
+    requires = {
+      {
+        "L3MON4D3/LuaSnip",
+        run = "make install_jsregexp",
+      },
+    },
   }
   -- use to add more snippets to LuaSnip
   use { "rafamadriz/friendly-snippets" }
@@ -237,38 +210,36 @@ use {
     end,
   }
 
-  use {
-    '~/Developer/engi/engi.nvim',
-    as = 'avante.nvim',
-    --event = 'BufRead', -- Use a valid event like 'BufRead' for lazy loading
-    run = 'cd ~/.local/share/nvim/site/pack/packer/start/avante.nvim && make', -- required build
-    config = function()
-      -- see copilot.lua for config
-    end,
-    requires = {
-      --'nvim-tree/nvim-web-devicons', -- installed elsewhere
-      --'nvim-lua/plenary.nvim', -- installed elsewhere
-      'stevearc/dressing.nvim',
-      'MunifTanjim/nui.nvim',
-      "HakonHarnes/img-clip.nvim",
-      {
-        'MeanderingProgrammer/render-markdown.nvim',
-        ft = { 'markdown', 'Avante' }, -- Lazy load based on file type
-        config = function()
-          require('render-markdown').setup({
-            file_types = { 'markdown', 'Avante' },
-          })
-          -- a convenient keymap to toggle the Big-O pane
-          vim.keymap.set(
-            'n',
-            '<leader>abo',
-            function() require('avante.bigo').toggle() end,
-            { desc = '☢ Big-O operator pane' }
-          )
-        end,
+  if vim.fn.isdirectory(local_avante_path) == 1 then
+    use {
+      local_avante_path,
+      as = 'avante.nvim',
+      run = 'make',
+      config = function()
+        -- see ai.lua for config
+      end,
+      requires = {
+        'stevearc/dressing.nvim',
+        'MunifTanjim/nui.nvim',
+        "HakonHarnes/img-clip.nvim",
+        {
+          'MeanderingProgrammer/render-markdown.nvim',
+          ft = { 'markdown', 'Avante' }, -- Lazy load based on file type
+          config = function()
+            require('render-markdown').setup({
+              file_types = { 'markdown', 'Avante' },
+            })
+            vim.keymap.set(
+              'n',
+              '<leader>abo',
+              function() require('avante.bigo').toggle() end,
+              { desc = '☢ Big-O operator pane' }
+            )
+          end,
+        },
       },
-    },
-  }
+    }
+  end
 
   -- ai code completion with avant
   --

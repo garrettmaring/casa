@@ -1,0 +1,32 @@
+if !exists('g:colors_name') || g:colors_name !=# 'edge'
+    finish
+endif
+if index(g:edge_loaded_file_types, 'zsh') ==# -1
+    call add(g:edge_loaded_file_types, 'zsh')
+else
+    finish
+endif
+" syn_begin: sh/zsh {{{
+" builtin: http://www.drchip.org/astronaut/vim/index.html#SYNTAX_SH{{{
+highlight! link shRange Fg
+highlight! link shOption Yellow
+highlight! link shQuote Green
+highlight! link shVariable RedItalic
+highlight! link shDerefSimple RedItalic
+highlight! link shDerefVar RedItalic
+highlight! link shDerefSpecial RedItalic
+highlight! link shDerefOff RedItalic
+highlight! link shVarAssign Purple
+highlight! link shFunction Blue
+highlight! link shFunctionKey Purple
+" }}}
+" syn_end
+" vim: set sw=2 ts=2 sts=2 et tw=80 ft=vim fdm=marker fmr={{{,}}}:
+" syn_begin: zsh {{{
+" builtin: https://github.com/chrisbra/vim-zsh{{{
+highlight! link zshOption RedItalic
+highlight! link zshSubst Cyan
+highlight! link zshFunction Blue
+" }}}
+" syn_end
+" vim: set sw=2 ts=2 sts=2 et tw=80 ft=vim fdm=marker fmr={{{,}}}:

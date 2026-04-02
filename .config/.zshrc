@@ -1,10 +1,10 @@
 # Amazon Q pre block. Keep at the top of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
 # load zsh plugin manager zgen
-source "${HOME}/.zgen/zgen.zsh"
+[[ -f "${HOME}/.zgen/zgen.zsh" ]] && source "${HOME}/.zgen/zgen.zsh"
 
 # init zgen if needed
-if ! zgen saved; then
+if command -v zgen >/dev/null 2>&1 && ! zgen saved; then
 
   # specify plugins here
 
@@ -44,7 +44,10 @@ function make_dir_cd() {
 alias mkcd=make_dir_cd
 
 # terminal (kitty) color theme
-eval "kitty @ set-colors --all --configured -c $CONFIG_HOME/kitty/colors/$(cat $CONFIG_HOME/.base16_theme).conf"
+if command -v kitty >/dev/null 2>&1 && [ -f "$CONFIG_HOME/.base16_theme" ]; then
+  theme_file="$CONFIG_HOME/kitty/colors/$(cat "$CONFIG_HOME/.base16_theme").conf"
+  [ -f "$theme_file" ] && kitty @ set-colors --all --configured -c "$theme_file" 2>/dev/null
+fi
 # set kitty tab/window name to directory automagically (https://github.com/kovidgoyal/kitty/issues/930)
 precmd () {print -Pn "\e]0;%~\a"}
 
@@ -160,7 +163,7 @@ alias pp="pnpm run pretty"
 alias ..="cd .."
 
 # configure prompt with starship
-eval "$(starship init zsh)"
+command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 
 # openai
 alias oafr="openai api fine_tunes.results -i $1"
@@ -169,11 +172,13 @@ alias oafr="openai api fine_tunes.results -i $1"
 alias codecopy='for f in "$@"; do echo -e "\n# $f\n"; cat "$f"; done | pbcopy' # codecopy is useful to get all contents to paste into chat (codecopy file1.js file2.py file3.txt)
 
 # ruby
-eval "$(rbenv init -)"
+command -v rbenv >/dev/null 2>&1 && eval "$(rbenv init -)"
 
 # python
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+if command -v pyenv >/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+  command -v pyenv-virtualenv-init >/dev/null 2>&1 && eval "$(pyenv virtualenv-init -)"
+fi
 alias python="python3"
 alias pip="pip3"
 
@@ -200,18 +205,18 @@ alias brow='arch --x86_64 /usr/local/homebrew/bin/brew'
 
 
 # >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/g/miniforge3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
+# !! Contents within this block are managed by Casa bootstrap expectations. !!
+if [ -x "$CONDA_HOME/bin/conda" ]; then
+  __conda_setup="$("$CONDA_HOME/bin/conda" 'shell.zsh' 'hook' 2> /dev/null)"
+  if [ $? -eq 0 ]; then
     eval "$__conda_setup"
-else
-    if [ -f "/Users/g/miniforge3/etc/profile.d/conda.sh" ]; then
-        . "/Users/g/miniforge3/etc/profile.d/conda.sh"
-    else
-        export PATH="/Users/g/miniforge3/bin:$PATH"
-    fi
+  elif [ -f "$CONDA_HOME/etc/profile.d/conda.sh" ]; then
+    . "$CONDA_HOME/etc/profile.d/conda.sh"
+  else
+    export PATH="$CONDA_HOME/bin:$PATH"
+  fi
+  unset __conda_setup
 fi
-unset __conda_setup
 # <<< conda initialize <<<
 
 
@@ -222,4 +227,3 @@ export LC_TYPE=en_US.UTF-8
 
 # Amazon Q post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
-

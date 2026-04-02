@@ -1,0 +1,17 @@
+markdown
+lua
+python
+rust
+javascript
+typescript
+tsx
+json
+css
+c
+cpp
+bash
+dockerfile
+go
+graphql
+markdown_inline
+toml

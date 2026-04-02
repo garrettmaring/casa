@@ -1,0 +1,4 @@
+# Copy this file to either ~/.zshenv.local or casa/.config/.zshenv.local.
+# Keep the copied file out of git.
+
+export OPENAI_API_KEY=""

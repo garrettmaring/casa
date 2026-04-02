@@ -1,0 +1,2 @@
+@nomicfoundation/solidity-language-server
+neovim

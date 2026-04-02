@@ -1,5 +1,44 @@
 vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "14.2")
 
+local data_bin = vim.fn.stdpath("data") .. "/casa-bin"
+if vim.fn.isdirectory(data_bin) == 1 then
+  vim.env.PATH = data_bin .. ":" .. vim.env.PATH
+end
+
+-- Neovim 0.11 deprecates vim.tbl_islist; older plugins still call it.
+if vim.islist then
+  vim.tbl_islist = vim.islist
+end
+
+-- Older plugins still require the legacy `health` module name.
+package.preload["health"] = package.preload["health"] or function()
+  return {
+    report_start = vim.health.start,
+    report_info = vim.health.info,
+    report_ok = vim.health.ok,
+    report_warn = vim.health.warn,
+    report_error = vim.health.error,
+  }
+end
+
+-- Symbols-outline and similar plugins still call the deprecated API.
+if vim.lsp and vim.lsp.get_clients then
+  vim.lsp.buf_get_clients = function(bufnr)
+    if type(bufnr) == "table" then
+      return vim.lsp.get_clients(bufnr)
+    end
+    return vim.lsp.get_clients({ bufnr = bufnr })
+  end
+end
+
+if vim.env.CASA_NVIM_BOOTSTRAP == "1" then
+  require("plugins")
+  if vim.env.CASA_NVIM_BOOTSTRAP_LOAD_PLUGINS == "1" then
+    vim.cmd("silent! packloadall")
+  end
+  return
+end
+
 
 require('packer.luarocks').install_commands()
 require("load_env")
@@ -39,6 +78,5 @@ require('clipboard')
 require('folds')
 require('highlights')
 require('editing')
-require('winbar')
 require('buffers')
 require('scroll')
