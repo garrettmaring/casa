@@ -8,11 +8,13 @@ flyctl
 fzf
 gh
 git
+gnupg
 jq
 localstack
 luarocks
 neofetch
 neovim
+pinentry-mac
 pipenv
 pyenv
 pyenv-virtualenv

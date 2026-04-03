@@ -10,6 +10,125 @@ if vim.islist then
   vim.tbl_islist = vim.islist
 end
 
+-- Older plugins still call vim.tbl_flatten, which is deprecated on 0.12.
+vim.tbl_flatten = function(t)
+  local result = {}
+
+  local function flatten(value)
+    if type(value) == "table" and vim.islist(value) then
+      for _, item in ipairs(value) do
+        flatten(item)
+      end
+      return
+    end
+
+    table.insert(result, value)
+  end
+
+  flatten(t)
+  return result
+end
+
+-- Newer nvim-treesitter removed the legacy configs module, but older plugins
+-- like Telescope still require a few helpers from it.
+local ts_legacy_modules = {
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+  },
+  indent = {
+    enable = false,
+  },
+}
+
+local function ts_legacy_get_module(name)
+  local module = ts_legacy_modules[name]
+  if not module then
+    module = {}
+    ts_legacy_modules[name] = module
+  end
+  return module
+end
+
+local function ts_legacy_is_disabled(disable, lang, bufnr)
+  if type(disable) == "function" then
+    local ok, disabled = pcall(disable, lang, bufnr)
+    return ok and disabled or false
+  end
+
+  if type(disable) == "table" then
+    if lang and vim.list_contains(disable, lang) then
+      return true
+    end
+
+    if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
+      local ft = vim.bo[bufnr].filetype
+      if ft ~= "" and vim.list_contains(disable, ft) then
+        return true
+      end
+    end
+  end
+
+  return false
+end
+
+package.preload["nvim-treesitter.configs"] = package.preload["nvim-treesitter.configs"] or function()
+  local M = {}
+
+  function M.setup(user_data)
+    for name, opts in pairs(user_data or {}) do
+      ts_legacy_modules[name] = vim.tbl_deep_extend("force", ts_legacy_get_module(name), opts)
+    end
+  end
+
+  function M.get_module(name)
+    return ts_legacy_get_module(name)
+  end
+
+  function M.is_enabled(name, lang, bufnr)
+    local module = ts_legacy_get_module(name)
+    if module.enable ~= true then
+      return false
+    end
+    if ts_legacy_is_disabled(module.disable, lang, bufnr) then
+      return false
+    end
+    if bufnr and lang then
+      local ok, parser = pcall(vim.treesitter.get_parser, bufnr, lang)
+      return ok and parser ~= nil
+    end
+    return true
+  end
+
+  function M.get_parser_configs()
+    local ok, ts_parsers = pcall(require, "nvim-treesitter.parsers")
+    return ok and ts_parsers or {}
+  end
+
+  return M
+end
+
+-- Telescope and other older plugins still call the removed Tree-sitter API.
+if vim.treesitter and vim.treesitter.language and vim.treesitter.language.get_lang and not vim.treesitter.language.ft_to_lang then
+  vim.treesitter.language.ft_to_lang = vim.treesitter.language.get_lang
+end
+do
+  local ok, ts_parsers = pcall(require, "nvim-treesitter.parsers")
+  if ok and not ts_parsers.ft_to_lang and vim.treesitter and vim.treesitter.language and vim.treesitter.language.get_lang then
+    ts_parsers.ft_to_lang = vim.treesitter.language.get_lang
+  end
+  if ok and not ts_parsers.get_parser then
+    ts_parsers.get_parser = function(bufnr, lang)
+      return vim.treesitter.get_parser(bufnr, lang)
+    end
+  end
+  if ok and not ts_parsers.has_parser then
+    ts_parsers.has_parser = function(lang)
+      return pcall(vim.treesitter.language.add, lang)
+    end
+  end
+end
+
 -- Older plugins still require the legacy `health` module name.
 package.preload["health"] = package.preload["health"] or function()
   return {

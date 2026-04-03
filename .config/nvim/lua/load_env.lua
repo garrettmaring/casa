@@ -25,11 +25,30 @@ local function load_env_file(filepath)
   return true
 end
 
+local function set_env_fallback(target_key, source_key)
+  local current_value = vim.env[target_key]
+  if current_value and current_value ~= "" then
+    return
+  end
+
+  local source_value = vim.env[source_key]
+  if source_value and source_value ~= "" then
+    vim.fn.setenv(target_key, source_value)
+  end
+end
+
 local config_dir = vim.fn.stdpath('config')
 
 -- Load repo defaults first, then local-only overrides.
 load_env_file(config_dir .. '/.env')
 load_env_file(config_dir .. '/.env.local')
+
+-- Prefer Avante-scoped credentials, but preserve compatibility with older
+-- shared env var names that may still exist in an untracked local file.
+set_env_fallback("AVANTE_ANTHROPIC_API_KEY", "ANTHROPIC_API_KEY")
+set_env_fallback("AVANTE_OPENAI_API_KEY", "OPENAI_API_KEY")
+set_env_fallback("AVANTE_GEMINI_API_KEY", "GEMINI_API_KEY")
+set_env_fallback("AVANTE_GROQ_API_KEY", "GROQ_API_KEY")
 
 -- ---------------------------------------------------------------------------
 -- Ensure Mason-installed binaries are on PATH so that Neovim can spawn the

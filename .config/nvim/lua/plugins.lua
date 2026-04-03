@@ -5,6 +5,7 @@ vim.cmd [[packadd packer.nvim]]
 
 return require('packer').startup(function()
   local local_avante_path = vim.fn.expand("~/Developer/engi/engi.nvim")
+  local has_local_avante = vim.fn.isdirectory(local_avante_path) == 1
 
   use 'wbthomason/packer.nvim'     -- Packer can manage itself
   -- system
@@ -210,36 +211,50 @@ use {
     end,
   }
 
-  if vim.fn.isdirectory(local_avante_path) == 1 then
-    use {
-      local_avante_path,
-      as = 'avante.nvim',
-      run = 'make',
-      config = function()
-        -- see ai.lua for config
-      end,
-      requires = {
-        'stevearc/dressing.nvim',
-        'MunifTanjim/nui.nvim',
-        "HakonHarnes/img-clip.nvim",
-        {
-          'MeanderingProgrammer/render-markdown.nvim',
-          ft = { 'markdown', 'Avante' }, -- Lazy load based on file type
-          config = function()
-            require('render-markdown').setup({
-              file_types = { 'markdown', 'Avante' },
-            })
-            vim.keymap.set(
-              'n',
-              '<leader>abo',
-              function() require('avante.bigo').toggle() end,
-              { desc = '☢ Big-O operator pane' }
-            )
-          end,
-        },
+  local avante_plugin = {
+    has_local_avante and local_avante_path or 'yetone/avante.nvim',
+    as = 'avante.nvim',
+    run = 'make',
+    config = function()
+      -- see ai.lua for config
+    end,
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'stevearc/dressing.nvim',
+      'MunifTanjim/nui.nvim',
+      'nvim-tree/nvim-web-devicons',
+      "HakonHarnes/img-clip.nvim",
+      {
+        'MeanderingProgrammer/render-markdown.nvim',
+        ft = { 'markdown', 'Avante' }, -- Lazy load based on file type
+        config = function()
+          require('render-markdown').setup({
+            file_types = { 'markdown', 'Avante' },
+          })
+          vim.keymap.set(
+            'n',
+            '<leader>abo',
+            function()
+              local ok, bigo = pcall(require, 'avante.bigo')
+              if ok then
+                bigo.toggle()
+                return
+              end
+
+              vim.notify("avante.bigo is unavailable in this Avante build", vim.log.levels.WARN)
+            end,
+            { desc = '☢ Big-O operator pane' }
+          )
+        end,
       },
-    }
+    },
+  }
+
+  if not has_local_avante then
+    avante_plugin.branch = 'main'
   end
+
+  use(avante_plugin)
 
   -- ai code completion with avant
   --

@@ -33,34 +33,46 @@ vim.api.nvim_create_autocmd("FileType", {
 -- 3) Avante setup
 --------------------------------------------------------------------------------
 avante.setup({
-  provider = "claude",
+  provider = "openai",
   cursor_applying_provider = 'groq',
-
-  openai = {
-    endpoint = "https://api.openai.com/v1",
-    model = "o3", -- your desired model (or use gpt-4o, etc.)
-    temperature = 0,
-    --max_completion_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
-    reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
-  },
-  claude = {
-    model = "claude-3-7-sonnet-latest",
-    -- NON-THINKING TEMP:
-    temperature = 0.000069,
-    --temperature = 1,
-    --max_tokens = 128000, -- Total token limit (input + output)
-    --thinking = {
-    --type = "enabled",
-    ----budget_tokens = 6000 -- Allocate 64K tokens for reasoning
-    --},
-    --disabled_tools = { "git_commit" },
-    --max_tokens = 64000, -- add for 3.7
-  },
-
-  gemini = {
-    --model = "gemini-2.0-pro-exp",
-    model = "gemini-2.5-pro-exp-03-25",
-    --model = 'gemini-2.0-flash-thinking-exp-01-21',
+  providers = {
+    openai = {
+      api_key_name = "OPENAI_API_KEY",
+      endpoint = "https://api.openai.com/v1",
+      use_response_api = true,
+      model = "gpt-5.4",
+      extra_request_body = {
+        temperature = 0,
+        --max_completion_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
+        reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
+      },
+    },
+    claude = {
+      api_key_name = "ANTHROPIC_API_KEY",
+      model = "claude-3-7-sonnet-latest",
+      extra_request_body = {
+        -- NON-THINKING TEMP:
+        temperature = 0.000069,
+      },
+      --thinking = {
+      --type = "enabled",
+      ----budget_tokens = 6000 -- Allocate 64K tokens for reasoning
+      --},
+      --disabled_tools = { "git_commit" },
+      --max_tokens = 64000, -- add for 3.7
+    },
+    gemini = {
+      api_key_name = "GEMINI_API_KEY",
+      --model = "gemini-2.0-pro-exp",
+      model = "gemini-2.5-pro-exp-03-25",
+      --model = 'gemini-2.0-flash-thinking-exp-01-21',
+    },
+    groq = { -- define groq provider
+      api_key_name = "GROQ_API_KEY",
+      endpoint = 'https://api.groq.com/openai/v1/',
+      model = 'llama-3.3-70b-versatile',
+      max_tokens = 32768, -- remember to increase this value, otherwise it will stop generating halfway
+    },
   },
   -- ui
   windows = {
@@ -90,16 +102,38 @@ avante.setup({
     enable_cursor_planning_mode = false,     -- Whether to enable Cursor Planning Mode. Default to false.
     --enable_claude_text_editor_tool_mode = true,
   },
-  vendors = {
-    groq = { -- define groq provider
-      __inherited_from = 'openai',
-      api_key_name = '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',
-      endpoint = 'https://api.groq.com/openai/v1/',
-      model = 'llama-3.3-70b-versatile',
-      max_tokens = 32768, -- remember to increase this value, otherwise it will stop generating halfway
-    },
-  },
 })
+
+do
+  local ok, Sidebar = pcall(require, "avante.sidebar")
+  if ok and not Sidebar._casa_tool_use_guarded then
+    local original_render_tool_use_control_buttons = Sidebar.render_tool_use_control_buttons
+    Sidebar.render_tool_use_control_buttons = function(self, ...)
+      local result = self and self.containers and self.containers.result
+      if not result or not result.winid or not result.bufnr then
+        return
+      end
+      if not vim.api.nvim_win_is_valid(result.winid) or not vim.api.nvim_buf_is_valid(result.bufnr) then
+        return
+      end
+      return original_render_tool_use_control_buttons(self, ...)
+    end
+
+    local original_get_current_tool_use_message_uuid = Sidebar.get_current_tool_use_message_uuid
+    Sidebar.get_current_tool_use_message_uuid = function(self, ...)
+      local result = self and self.containers and self.containers.result
+      if not result or not result.winid then
+        return nil
+      end
+      if not vim.api.nvim_win_is_valid(result.winid) then
+        return nil
+      end
+      return original_get_current_tool_use_message_uuid(self, ...)
+    end
+
+    Sidebar._casa_tool_use_guarded = true
+  end
+end
 
 --------------------------------------------------------------------------------
 -- 4) After your Edge color scheme is set, optionally tweak floating highlights
