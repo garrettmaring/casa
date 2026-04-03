@@ -64,8 +64,13 @@ end
 -- Optional common on_attach function
 local function on_attach(client, bufnr)
   -- navic
-  if client.server_capabilities.documentSymbolProvider then
-    pcall(require, "nvim-navic").attach(client, bufnr)
+  local has_navic, navic = pcall(require, "nvim-navic")
+  if has_navic
+    and type(navic) == "table"
+    and type(navic.attach) == "function"
+    and client.server_capabilities.documentSymbolProvider
+  then
+    pcall(navic.attach, client, bufnr)
   end
 
   -- buffer local keymaps
