@@ -67,9 +67,146 @@ alias lns="ln -s"
 alias la="ls -la"
 
 # git
+git_default_diff_range() {
+  local remote_head
+  remote_head="$(git symbolic-ref --quiet refs/remotes/origin/HEAD 2>/dev/null)"
+
+  if [[ -n "$remote_head" ]]; then
+    printf '%s\n' "origin/${remote_head#refs/remotes/origin/}...HEAD"
+    return 0
+  fi
+
+  local ref
+  for ref in origin/main origin/master main master; do
+    if git rev-parse --verify "$ref" >/dev/null 2>&1; then
+      printf '%s\n' "$ref...HEAD"
+      return 0
+    fi
+  done
+
+  printf '%s\n' 'HEAD~1...HEAD'
+}
+
+git_diffview() {
+  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "git_diffview: not inside a git repository" >&2
+    return 1
+  fi
+
+  local ex_cmd
+  local -a editor_args
+  local -a remote_args
+  local data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
+  local diffview_start="$data_home/nvim/site/pack/packer/start/diffview.nvim"
+  local diffview_opt="$data_home/nvim/site/pack/packer/opt/diffview.nvim"
+  local use_remote=0
+  local has_diffview=0
+
+  if command -v nvr >/dev/null 2>&1 && { [[ -n "${NVIM:-}" ]] || [[ -n "${NVIM_LISTEN_ADDRESS:-}" ]]; }; then
+    use_remote=1
+  fi
+
+  if [[ -d "$diffview_start" || -d "$diffview_opt" ]]; then
+    has_diffview=1
+  fi
+
+  if (( ! has_diffview )); then
+    case "${1:-}" in
+      "" )
+        git diff "$(git_default_diff_range)"
+        return
+        ;;
+      working-tree|worktree|wt|--working-tree|-w)
+        shift
+        git diff "$@"
+        return
+        ;;
+      file|--file|-f)
+        shift
+        if (( $# == 0 )); then
+          echo "git_diffview file: pass a file path when Diffview is unavailable" >&2
+          return 1
+        fi
+        git log --follow -- "$1"
+        return
+        ;;
+      history|repo|--history)
+        shift
+        git log --graph --decorate --oneline --all "$@"
+        return
+        ;;
+      close|quit|q|--close)
+        return 0
+        ;;
+      --help|-h)
+        ;;
+      *)
+        git diff "$@"
+        return
+        ;;
+    esac
+  fi
+
+  case "${1:-}" in
+    "" )
+      ex_cmd="GitDiff"
+      ;;
+    working-tree|worktree|wt|--working-tree|-w)
+      shift
+      ex_cmd="GitDiffWorkingTree"
+      ;;
+    file|--file|-f)
+      shift
+
+      if (( $# > 0 )); then
+        editor_args+=("$1")
+        remote_args+=("$1")
+        shift
+      elif (( ! use_remote )); then
+        echo "git_diffview file: pass a file path when launching from the shell" >&2
+        return 1
+      fi
+
+      ex_cmd="GitDiffFileHistory"
+      ;;
+    history|repo|--history)
+      shift
+      ex_cmd="GitDiffHistory"
+      ;;
+    close|quit|q|--close)
+      shift
+      ex_cmd="GitDiffClose"
+      ;;
+    --help|-h)
+      cat <<'EOF'
+git_diffview [revision-range]
+git_diffview working-tree
+git_diffview file <path>
+git_diffview history
+git_diffview close
+EOF
+      return 0
+      ;;
+    *)
+      ex_cmd="GitDiff $*"
+      ;;
+  esac
+
+  if (( use_remote )); then
+    nvr "${remote_args[@]}" -cc "$ex_cmd"
+  else
+    nvim "${editor_args[@]}" "+$ex_cmd"
+  fi
+}
+
 alias gco="git checkout"
 alias gs="git status"
-alias gd="git diff"
+alias gd="git_diffview"
+alias gdd="git diff"
+alias gdw="git_diffview working-tree"
+alias gdf="git_diffview file"
+alias gdh="git_diffview history"
+alias gdq="git_diffview close"
 
 # ai git helpers
 aigcm() {

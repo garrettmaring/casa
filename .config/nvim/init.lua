@@ -177,6 +177,8 @@ require('registers')      -- copy pasta 🍝
 require('hints')          -- easy motion
 require('commenting')     -- nerdcommenter settings
 require('git')            -- totally Torvalds
+require('git').setup()
+
 require('gitsigns')       -- gitsigns plugin configuration
 require('rust')           -- configure Rust debugger
 require('cursor')         -- customize the cursor

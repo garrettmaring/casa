@@ -182,6 +182,21 @@ use {
   use { "rafamadriz/friendly-snippets" }
   -- git commit completion
   use 'petertriho/cmp-git'
+  use {
+    'sindrets/diffview.nvim',
+    requires = { 'nvim-lua/plenary.nvim' },
+    cmd = {
+      'DiffviewOpen',
+      'DiffviewClose',
+      'DiffviewToggleFiles',
+      'DiffviewFocusFiles',
+      'DiffviewFileHistory',
+      'DiffviewRefresh',
+    },
+    config = function()
+      require('git').setup_diffview()
+    end,
+  }
   use 'hrsh7th/cmp-nvim-lsp-signature-help' -- use to automcomplete better function signatures
 
 
