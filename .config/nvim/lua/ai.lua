@@ -1,6 +1,9 @@
 -- =======================
 -- ai.lua (Consolidated)
 -- =======================
+--
+local map = vim.api.nvim_set_keymap
+local options = { noremap = true, silent = true }
 
 --------------------------------------------------------------------------------
 -- 1) Load Avante
@@ -18,6 +21,7 @@ if not has_avante then
 end
 
 -- By default Avante also has a mapping <leader>aa → :Avante, <leader>at → :AvanteToggle
+map('n', '<leader>ac', ':AvanteToggle<cr>', options) -- no close
 
 --------------------------------------------------------------------------------
 -- 2) Make Avante buffers modifiable if needed
@@ -38,7 +42,7 @@ avante.setup({
   providers = {
     openai = {
       api_key_name = "OPENAI_API_KEY",
-      endpoint = "https://api.openai.com/v1",
+      --endpoint = "https://api.openai.com/v1",
       use_response_api = true,
       model = "gpt-5.4",
       extra_request_body = {
