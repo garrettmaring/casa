@@ -137,9 +137,10 @@ end
 -- Key mappings
 vim.keymap.set("n", "<leader>dy", copy_file_diagnostics,
   { desc = "Copy file diagnostics to clipboard", silent = true, noremap = true })
+vim.keymap.set("n", "<leader>dc", "<cmd>Trouble close<cr>", options)
 vim.keymap.set("n", "<leader>dd", "<cmd>Trouble diagnostics toggle<cr>", options)
 vim.keymap.set("n", "<leader>dw", "<cmd>Trouble workspace_diagnostics toggle<cr>", options)
 vim.keymap.set("n", "<leader>do", "<cmd>Trouble document_diagnostics toggle<cr>", options)
 vim.keymap.set("n", "<leader>dl", "<cmd>Trouble loclist toggle<cr>", options)
-vim.keymap.set("n", "<leader>dq", "<cmd>Trouble quickfix toggle<cr>", options)
+vim.keymap.set("n", "<leader>df", "<cmd>Trouble quickfix toggle<cr>", options)
 vim.keymap.set("n", "<leader>dr", "<cmd>Trouble lsp_references toggle<cr>", options)
