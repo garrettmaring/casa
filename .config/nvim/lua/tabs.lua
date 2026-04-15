@@ -1,3 +1,8 @@
+--[[
+Behaviors:
+- Maps `<C-D-[>` and `<C-D-]>` to Barbar previous/next buffer-tab navigation.
+- Maps `<leader>cb` and `<leader>bc` to `:BufferClose`.
+]]
 -- buffer tab management
 
 local map = vim.api.nvim_set_keymap

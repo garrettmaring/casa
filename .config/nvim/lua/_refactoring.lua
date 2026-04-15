@@ -1,4 +1,9 @@
-# 'refactoring' is an existing (3rd party) module name hence the prefix '_'
+--[[
+Behaviors:
+- Reserves this file for `refactoring.nvim` integration without colliding with the plugin's `refactoring` module name.
+- Keeps the planned setup and mappings (`<leader>re`, `rf`, `rv`, `rI`, `ri`, `rb`, `rbf`, `rr`) commented out, so it currently adds no editor behavior.
+]]
+-- `refactoring` is an existing third-party module name, hence the `_` prefix.
 -- TOOD: better refactoring, see lsp for current rename
 --require('refactoring').setup()
 --vim.keymap.set("x", "<leader>re", function() require('refactoring').refactor('Extract Function') end)

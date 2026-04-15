@@ -1,3 +1,10 @@
+--[[
+Behaviors:
+- Loads Avante only when `avante_lib` and `avante` are available, then configures the OpenAI, Claude, Gemini, and Groq providers with OpenAI as the default.
+- Maps `<leader>ac` to `:AvanteToggle`, leaves Avante's own auto-keymaps enabled, and makes `Avante`, `AvanteSelectedFiles`, `AvanteInput`, and `AvanteChat` buffers modifiable.
+- Applies Avante-specific background and `winhighlight` overrides through `FileType`, `BufWinEnter`, and `ColorScheme` autocmds.
+- Guards Avante sidebar tool-use rendering helpers so invalid result windows/buffers fail closed instead of throwing.
+]]
 -- =======================
 -- ai.lua (Consolidated)
 -- =======================

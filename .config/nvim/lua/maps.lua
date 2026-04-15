@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Reserves bare `<Space>` and sets `mapleader` to space.
+- Maps `<leader>qq`, `<leader>qa`, `<leader>qh`, `<leader>wq`, and `<leader>wqa` for quit, quit-all, force-quit, write-quit, and write-quit-all.
+- Leaves the empty-line and non-empty-line navigation experiments commented out.
+]]
 local map = vim.api.nvim_set_keymap
 local options = { noremap = true, silent = true }
 

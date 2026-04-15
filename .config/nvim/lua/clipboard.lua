@@ -1,3 +1,8 @@
+--[[
+Behaviors:
+- Remaps `P` to open a new line above and paste there, with `Bp` preserving the original paste-before behavior.
+- Remaps `x`, visual `x`, `xx`, and `X` to cut character, selection edge, whole line, and rest-of-line text instead of the stock defaults.
+]]
 -- clipboard: copying, pasting, duplicating, clipboard history
 
 local map = vim.api.nvim_set_keymap

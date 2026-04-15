@@ -1,3 +1,7 @@
+--[[
+Behaviors:
+- Disables NERDCommenter's default mappings and remaps `<leader>cc` in normal and visual mode to `NERDCommenterToggle`.
+]]
 -- crispy comments 🥓
 
 local g = vim.g -- global options

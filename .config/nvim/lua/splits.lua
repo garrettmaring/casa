@@ -1,3 +1,8 @@
+--[[
+Behaviors:
+- Sets `splitbelow`, `splitright`, and `splitkeep=screen` so new splits open predictably without shifting the main layout.
+- Maps `<leader>ssh` / `<leader>ssv` for horizontal and vertical splits, plus `<C-D-h/j/k/l>` for window focus moves.
+]]
 -- splits
 
 local map = vim.api.nvim_set_keymap

@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Disables kitty-navigator's default mappings and replaces them with custom smart pane navigation.
+- Maps `<C-h/j/k/l>` in normal and terminal mode to try `wincmd` first, then fall back to `KittyNavigate*` if Neovim cannot move.
+- Exposes direct Kitty pane commands on `<leader>kih`, `<leader>kij`, `<leader>kik`, and `<leader>kil`.
+]]
 -- Disable default kitty navigator mappings
 vim.g.kitty_navigator_no_mappings = 1
 

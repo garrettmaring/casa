@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Configures `nvim-cmp` sources (`nvim_lsp`, `codeium`, `path`, signature help, fuzzy buffer, crates, npm, plugins), fuzzy-first sorting, custom source icons, and bordered docs.
+- Maps `<Up>/<Down>`, `<C-p>/<C-n>`, `<C-u>/<C-f>`, `<C-e>`, `<CR>`, `<C-d>/<C-b>`, and `<Tab>/<S-Tab>` for completion selection, doc scroll, abort, confirm, and LuaSnip jumps.
+- Disables completion inside prompt buffers and comments, then runs `nvim-autopairs` after confirmed completions.
+]]
 -- autocomplete.lua
 --
 -- autocomplete uses nvim-cmp, nvim-lspconfig, snippets, and more to create a configurable and robust
@@ -180,4 +186,3 @@ cmp.event:on(
   --end,
   --pattern = "*"
 --})
-

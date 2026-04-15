@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Configures `nvim-tree` on the right side with dynamic width, git highlighting, indent markers, padded icons, and a custom `on_attach`.
+- Maps `<leader>ff`, `<leader>fo`, and `<leader>fc` to find the current file, open the tree, and close the tree.
+- Applies NvimTree-specific line-number padding and background highlights on `FileType`, clears the window-local highlight override on tree `BufLeave`, and reapplies the palette on `ColorScheme`.
+]]
 -- TODO: when nvim tree opens a file (say with the smart renaming), that inner editor portion get's the gray background of nvim mistakenly
 
 local nvim_tree = require('nvim-tree')

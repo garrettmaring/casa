@@ -1,3 +1,8 @@
+--[[
+Behaviors:
+- Loads `rust-tools.nvim` only when available and skips setup entirely on Neovim 0.11+.
+- Adds buffer-local Rust mappings for `<D-space>` hover actions and `<Leader>a` code-action groups during attach, and warns instead of crashing if setup fails.
+]]
 -- rust-tools plugin configuration
 --
 -- @see https://github.com/simrat39/rust-tools.nvim

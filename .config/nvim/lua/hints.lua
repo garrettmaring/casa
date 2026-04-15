@@ -1,3 +1,8 @@
+--[[
+Behaviors:
+- Maps `<leader>ht` to `:HopWord` for hint-based jump navigation.
+- Leaves the tree-sitter hop experiments commented out, so only the single Hop mapping is active.
+]]
 local map = vim.api.nvim_set_keymap
 
 

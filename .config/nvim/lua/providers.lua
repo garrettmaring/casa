@@ -1,3 +1,8 @@
+--[[
+Behaviors:
+- Configures Neovim's Python, Ruby, and Node provider executables, while disabling the Perl provider.
+- Clears broken `VIRTUAL_ENV` values, pins Python host programs to specific `pyenv` virtualenvs when present, and sets Ruby/Node hosts only if the executables exist.
+]]
 -- providers.lua
 --
 -- configure neovims python providers

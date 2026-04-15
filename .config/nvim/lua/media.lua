@@ -1,3 +1,8 @@
+--[[
+Behaviors:
+- Returns early in headless sessions, then loads `hologram.nvim` only when the plugin is available.
+- Calls `hologram.setup()` with default options and warns asynchronously if setup fails.
+]]
 -- display media such as images in vim
 
 if #vim.api.nvim_list_uis() == 0 then

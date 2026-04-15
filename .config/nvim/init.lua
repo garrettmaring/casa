@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Acts as the Neovim entrypoint and startup order for the rest of the Lua config.
+- Adds environment and compatibility shims for older plugins around Tree-sitter, `health`, and legacy LSP helpers.
+- Supports a bootstrap-only mode and otherwise loads plugins, UI, editing, AI, and navigation modules.
+]]
 vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "14.2")
 
 local data_bin = vim.fn.stdpath("data") .. "/casa-bin"

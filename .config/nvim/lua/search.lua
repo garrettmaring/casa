@@ -1,3 +1,8 @@
+--[[
+Behaviors:
+- Configures Telescope to include hidden files in `find_files` and `live_grep` while skipping `.git` and `.next`, then loads the native `fzf` sorter extension.
+- Maps `<leader>sf`, `<leader>sc`, `<leader>sb`, and `<leader>st` to file search, live grep, buffer search, and help tags.
+]]
 -- searching for files, code, etc.
 -- @see https://github.com/nvim-telescope/telescope.nvim/wiki/Extensions#sorter
 

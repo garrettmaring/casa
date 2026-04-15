@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Sets `foldmethod=syntax` in this simpler fold layer.
+- Maps `<leader>ch` to clear search highlighting and `<leader>zj/zk/z[/z]` to centered fold navigation.
+- Maps `<leader>z+` and `<leader>z-` to raise or lower `foldlevel` through local helper functions.
+]]
 local map = vim.api.nvim_set_keymap
 local options = { noremap = true, silent = true }
 

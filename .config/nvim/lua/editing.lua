@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Enables line numbers, relative numbers, and `numberwidth=2` for this config layer.
+- Maps `<leader>kw` in normal and insert mode to write, and `<leader>kj` / `<leader>jk` in insert mode to escape quickly.
+- Remaps `s`, `ss`, and `S` to `vim-subversive` substitute operators.
+]]
 local map = vim.api.nvim_set_keymap
 local options = { noremap = true, silent = true }
 

@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Configures Trouble as the diagnostics/location-list UI with custom fold/severity icons and panel action keys such as `q`, `<esc>`, `r`, `<cr>`, `<tab>`, `<c-x>`, and `<c-v>`.
+- Maps `<leader>dc/dd/dw/do/dl/df/dr` to close Trouble or toggle diagnostics, workspace diagnostics, document diagnostics, loclist, quickfix, and LSP references.
+- Maps `<leader>dy` to copy the current buffer's diagnostics to the clipboard in a readable multi-line format.
+]]
 -- need to learn this code more, was generate from deep research on good trouble config
 
 local trouble = require('trouble')

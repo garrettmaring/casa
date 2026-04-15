@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Replaces the `statuscolumn` with custom page-target and last-page markers, then enables number-column cursorline rendering for the active window.
+- Tracks per-window paging state and refreshes the render on colorscheme, cursor, window, scroll, and close events.
+- Maps `<D-j/k/f/b>` and `<M-j/k/f/b>` to centered half/full-page paging, `<D-J/K>` and `<M-J/K>` to line scrolling, and keeps `<PageUp>` / `<PageDown>` centered as well.
+]]
 local M = {}
 
 local map = vim.keymap.set

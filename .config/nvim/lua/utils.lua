@@ -1,3 +1,7 @@
+--[[
+Behaviors:
+- Exports `create_augroup(autocmds, name)`, a helper that turns simple table specs into augroup + autocommand definitions via `vim.cmd`.
+]]
 local M = {}
 local cmd = vim.cmd
 
@@ -11,4 +15,3 @@ function M.create_augroup(autocmds, name)
 end
 
 return M
-

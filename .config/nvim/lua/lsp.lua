@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Bootstraps `mason.nvim`, `mason-lspconfig`, `nvim-lspconfig`, and `cmp_nvim_lsp`, ensuring a base server set plus `csharp_ls` when `dotnet` is available.
+- Exposes shared `on_attach` buffer maps for `K`, `gd`, `gD`, `gr`, `gi`, `<leader>rn`, and `<leader>ca`, attaches `nvim-navic` when possible, and adds Rust-specific `<D-space>` / `<Leader>a` bindings.
+- Configures `lua_ls` and Solidity explicitly, adds `LspAttach`-driven format-on-save for clients that support formatting, and forces rounded hover/signature borders.
+]]
 -- ~/.config/nvim/lua/_lsp.lua
 
 local M = {}

@@ -1,3 +1,7 @@
+--[[
+Behaviors:
+- Maps `Ctrl-p` in normal and insert mode to open `:Registers`.
+]]
 local map = vim.api.nvim_set_keymap
 
 

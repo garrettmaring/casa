@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Exports `setup()` to switch folding to Tree-sitter expression mode with custom fold text/highlights and UFO integration.
+- Disables fold UI inside `NvimTree` buffers via `FileType`.
+- Maps `zR`, `zM`, `zr`, and `zm` to UFO open/close helpers.
+]]
 -- Refined fold configuration
 local M = {}
 

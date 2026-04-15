@@ -1,3 +1,8 @@
+--[[
+Behaviors:
+- Exports `M.setup()` as a gitsigns config-table builder rather than calling `require('gitsigns').setup()` directly.
+- Defines add/change/delete sign glyphs, git-dir watching, blame formatting, preview-window options, and untracked-file attachment behavior.
+]]
 -- configuration for gitsigns plugin
 --
 -- @see https://github.com/lewis6991/gitsigns.nvim

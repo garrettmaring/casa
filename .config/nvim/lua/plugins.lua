@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Declares the full Packer plugin set for this Neovim config across theme, UI, navigation, LSP, completion, git, AI, file tree, and language-specific tooling.
+- Prefers a local Avante checkout at `~/Developer/engi/engi.nvim` when present and otherwise falls back to the remote plugin.
+- Includes plugin-local setup hooks, build steps, and lazy-loading triggers such as filetypes and user commands.
+]]
 -- This file can be loaded by calling `lua require('plugins')` from your init.vim
 
 -- Only required if you have packer configured as `opt`

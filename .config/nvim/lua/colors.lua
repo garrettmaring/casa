@@ -1,3 +1,7 @@
+--[[
+Behaviors:
+- Enables `termguicolors`, sets the Edge theme globals (`edge_style` and `edge_better_performance`), and applies `colorscheme edge` with `pcall`.
+]]
 local o = vim.o
 local g = vim.g -- global options
 local cmd = vim.cmd

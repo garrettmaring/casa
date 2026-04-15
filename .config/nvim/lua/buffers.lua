@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Enables hidden buffers and maps `<leader>bb/bp/bn/bl/bg/bd/bD/bw` plus `[b` and `]b` for alternate-buffer jumps, cycling, listing, delete/write, and jumplist navigation.
+- Adds optional `<leader>bs` Telescope buffer search, appends the listed-buffer count to `statusline`, and defines `:B` / `:Bs` helpers for direct buffer switching.
+- Uses `VimResized` to equalize windows and `BufLeave` to silently write modified named buffers.
+]]
 -- Create module table
 local M = {}
 

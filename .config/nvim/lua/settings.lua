@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Sets baseline editor behavior for mouse support, swap location, searching, scroll offset, indentation, and clipboard integration.
+- Turns off line numbers in this layer while keeping wrapped, linebreak-aware display enabled.
+- Disables the built-in filetype loader in favor of external/custom filetype handling.
+]]
 local o = vim.o
 local g = vim.g -- global options
 local wo = vim.wo

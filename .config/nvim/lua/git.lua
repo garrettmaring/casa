@@ -1,3 +1,10 @@
+--[[
+Behaviors:
+- Centralizes git commit completion and Diffview integration, lazily loading `diffview.nvim` when needed.
+- Defines `:GitDiff [rev]`, `:GitDiffWorkingTree`, `:GitDiffFileHistory`, `:GitDiffHistory`, and `:GitDiffClose`.
+- Maps `<leader>gd/gD/gf/gh/gq` to the inferred default-branch diff, worktree diff, current-file history, repo history, and close; Diffview panes also get `dq` and `<leader>dq`.
+- Restores the original tab/window/buffer on close and infers the default branch from `origin/HEAD`, cached remote metadata, or common branch names.
+]]
 -- git + vim 💕
 
 local M = {}
@@ -32,17 +39,55 @@ local function git_ref_exists(ref)
   return vim.v.shell_error == 0
 end
 
-local function default_revision_range()
-  local remote_head = vim.fn.systemlist({ 'git', 'symbolic-ref', '--quiet', 'refs/remotes/origin/HEAD' })[1]
+local function first_system_line(cmd)
+  local lines = vim.fn.systemlist(cmd)
 
-  if vim.v.shell_error == 0 and remote_head and remote_head ~= '' then
-    return remote_head:gsub('^refs/remotes/origin/', 'origin/') .. '...HEAD'
+  if vim.v.shell_error ~= 0 then
+    return nil
   end
 
-  for _, ref in ipairs({ 'origin/main', 'origin/master', 'main', 'master' }) do
-    if git_ref_exists(ref) then
-      return ref .. '...HEAD'
+  local first = lines[1]
+  if not first or first == '' then
+    return nil
+  end
+
+  return vim.trim(first)
+end
+
+local function default_branch_ref()
+  local remote_head = first_system_line({ 'git', 'symbolic-ref', '--quiet', 'refs/remotes/origin/HEAD' })
+
+  if remote_head then
+    return remote_head:gsub('^refs/remotes/origin/', 'origin/')
+  end
+
+  local remote_info = vim.fn.systemlist({ 'git', 'remote', 'show', '-n', 'origin' })
+  if vim.v.shell_error == 0 then
+    for _, line in ipairs(remote_info) do
+      local branch = vim.trim(line:match('^%s*HEAD branch:%s*(.+)$') or '')
+      if branch ~= '' and branch ~= '(not queried)' then
+        local remote_ref = 'origin/' .. branch
+        if git_ref_exists(remote_ref) then
+          return remote_ref
+        end
+        if git_ref_exists(branch) then
+          return branch
+        end
+      end
     end
+  end
+
+  for _, ref in ipairs({ 'origin/main', 'origin/master', 'origin/trunk', 'origin/develop', 'origin/dev', 'main', 'master', 'trunk', 'develop', 'dev' }) do
+    if git_ref_exists(ref) then
+      return ref
+    end
+  end
+end
+
+local function default_revision_range()
+  local base_ref = default_branch_ref()
+  if base_ref then
+    return base_ref .. '...HEAD'
   end
 
   return 'HEAD~1...HEAD'
@@ -270,8 +315,7 @@ function M.setup_diffview()
       },
     },
     default_args = {
-      DiffviewOpen = { '--untracked-files=all', '--imply-local' },
-      DiffviewFileHistory = { '--base=LOCAL' },
+      DiffviewOpen = { '--untracked-files=all' },
     },
   })
 

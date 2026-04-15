@@ -1,3 +1,8 @@
+--[[
+Behaviors:
+- Configures Lualine to show the `nvim-navic` breadcrumb location in `lualine_c`.
+- Forces `laststatus = 3` so side views can fully collapse into a global statusline.
+]]
 local opt = vim.opt
 local navic = require("nvim-navic")
 

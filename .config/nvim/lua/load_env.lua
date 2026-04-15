@@ -1,3 +1,9 @@
+--[[
+Behaviors:
+- Loads `.env` first and `.env.local` second from the Neovim config directory into the current process environment.
+- Backfills `AVANTE_*_API_KEY` variables from older shared `*_API_KEY` names when the Avante-scoped names are missing.
+- Prepends Mason's `bin` directory to `PATH` once so GUI and terminal Neovim sessions can spawn installed tooling.
+]]
 local function load_env_file(filepath)
   local file = io.open(filepath, "r")
   if not file then
