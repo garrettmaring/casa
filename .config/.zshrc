@@ -113,7 +113,17 @@ git_diffview() {
   if (( ! has_diffview )); then
     case "${1:-}" in
       "" )
-        git diff "$(git_default_diff_range)"
+        git diff
+        return
+        ;;
+      index|current|--index|-i)
+        shift
+        git diff "$@"
+        return
+        ;;
+      default-branch|branch|ahead|remote|origin|--default-branch|-b)
+        shift
+        git diff "$(git_default_diff_range)" "$@"
         return
         ;;
       working-tree|worktree|wt|--working-tree|-w)
@@ -151,6 +161,14 @@ git_diffview() {
     "" )
       ex_cmd="GitDiff"
       ;;
+    index|current|--index|-i)
+      shift
+      ex_cmd="GitDiffIndex"
+      ;;
+    default-branch|branch|ahead|remote|origin|--default-branch|-b)
+      shift
+      ex_cmd="GitDiffDefaultBranch"
+      ;;
     working-tree|worktree|wt|--working-tree|-w)
       shift
       ex_cmd="GitDiffWorkingTree"
@@ -179,6 +197,9 @@ git_diffview() {
       ;;
     --help|-h)
       cat <<'EOF'
+git_diffview
+git_diffview index
+git_diffview default-branch
 git_diffview [revision-range]
 git_diffview working-tree
 git_diffview file <path>
@@ -203,6 +224,8 @@ alias gco="git checkout"
 alias gs="git status"
 alias gd="git_diffview"
 alias gdd="git diff"
+alias gdi="git_diffview index"
+alias gdb="git_diffview default-branch"
 alias gdw="git_diffview working-tree"
 alias gdf="git_diffview file"
 alias gdh="git_diffview history"

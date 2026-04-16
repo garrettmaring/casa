@@ -1,8 +1,8 @@
 --[[
 Behaviors:
 - Centralizes git commit completion and Diffview integration, lazily loading `diffview.nvim` when needed.
-- Defines `:GitDiff [rev]`, `:GitDiffWorkingTree`, `:GitDiffFileHistory`, `:GitDiffHistory`, and `:GitDiffClose`.
-- Maps `<leader>gd/gD/gf/gh/gq` to the inferred default-branch diff, worktree diff, current-file history, repo history, and close; Diffview panes also get `dq` and `<leader>dq`.
+- Defines `:GitDiff [rev]`, `:GitDiffIndex`, `:GitDiffWorkingTree`, `:GitDiffDefaultBranch`, `:GitDiffFileHistory`, `:GitDiffHistory`, and `:GitDiffClose`.
+- Maps `<leader>gd/gb/gD/gf/gh/gq` to the live worktree diff, inferred default-branch diff, explicit worktree diff, current-file history, repo history, and close; Diffview panes also get `dq` and `<leader>dq`.
 - Restores the original tab/window/buffer on close and infers the default branch from `origin/HEAD`, cached remote metadata, or common branch names.
 ]]
 -- git + vim 💕
@@ -172,7 +172,7 @@ local function restore_diffview_return_state()
   end)
 end
 
-local function open_default_diff(opts)
+local function open_diffview(args)
   if not ensure_diffview() then
     vim.notify('Diffview is unavailable.', vim.log.levels.ERROR)
     return
@@ -180,18 +180,28 @@ local function open_default_diff(opts)
 
   capture_diffview_return_state()
 
-  local revision_range = opts.args ~= '' and opts.args or default_revision_range()
-  vim.cmd('DiffviewOpen ' .. revision_range)
+  if args and args ~= '' then
+    vim.cmd('DiffviewOpen ' .. args)
+    return
+  end
+
+  vim.cmd('DiffviewOpen')
+end
+
+local function open_diff(opts)
+  open_diffview(opts.args ~= '' and opts.args or nil)
+end
+
+local function open_default_branch_diff()
+  open_diffview(default_revision_range())
+end
+
+local function open_index_diff()
+  open_diffview()
 end
 
 local function open_worktree_diff()
-  if not ensure_diffview() then
-    vim.notify('Diffview is unavailable.', vim.log.levels.ERROR)
-    return
-  end
-
-  capture_diffview_return_state()
-  vim.cmd('DiffviewOpen')
+  open_diffview()
 end
 
 local function open_current_file_history()
@@ -258,13 +268,17 @@ function M.setup()
 
   vim.opt.diffopt:append({ 'algorithm:histogram', 'indent-heuristic', 'linematch:60' })
 
-  vim.api.nvim_create_user_command('GitDiff', open_default_diff, { nargs = '?' })
+  vim.api.nvim_create_user_command('GitDiff', open_diff, { nargs = '?' })
+  vim.api.nvim_create_user_command('GitDiffIndex', open_index_diff, {})
   vim.api.nvim_create_user_command('GitDiffWorkingTree', open_worktree_diff, {})
+  vim.api.nvim_create_user_command('GitDiffDefaultBranch', open_default_branch_diff, {})
   vim.api.nvim_create_user_command('GitDiffFileHistory', open_current_file_history, {})
   vim.api.nvim_create_user_command('GitDiffHistory', open_repo_history, {})
   vim.api.nvim_create_user_command('GitDiffClose', close_diffview, {})
 
   vim.keymap.set('n', '<leader>gd', '<cmd>GitDiff<cr>',
+    { desc = 'Git diff', noremap = true, silent = true })
+  vim.keymap.set('n', '<leader>gb', '<cmd>GitDiffDefaultBranch<cr>',
     { desc = 'Git diff against default branch', noremap = true, silent = true })
   vim.keymap.set('n', '<leader>gD', '<cmd>GitDiffWorkingTree<cr>',
     { desc = 'Git working tree diff', noremap = true, silent = true })
