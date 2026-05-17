@@ -94,6 +94,7 @@ git_diffview() {
   fi
 
   local ex_cmd
+  local commit_ref
   local -a editor_args
   local -a remote_args
   local data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
@@ -129,6 +130,21 @@ git_diffview() {
       working-tree|worktree|wt|--working-tree|-w)
         shift
         git diff "$@"
+        return
+        ;;
+      commit|--commit|-c)
+        shift
+        if (( $# == 0 )); then
+          echo "git_diffview commit: pass a commit hash or ref" >&2
+          return 1
+        fi
+        commit_ref="$1"
+        shift
+        if (( $# > 0 )); then
+          git show "$commit_ref" -- "$@"
+        else
+          git show "$commit_ref"
+        fi
         return
         ;;
       file|--file|-f)
@@ -173,6 +189,18 @@ git_diffview() {
       shift
       ex_cmd="GitDiffWorkingTree"
       ;;
+    commit|--commit|-c)
+      shift
+
+      if (( $# == 0 )); then
+        echo "git_diffview commit: pass a commit hash or ref" >&2
+        return 1
+      fi
+
+      commit_ref="$1"
+      shift
+      ex_cmd="GitDiff ${commit_ref}^!"
+      ;;
     file|--file|-f)
       shift
 
@@ -202,6 +230,7 @@ git_diffview index
 git_diffview default-branch
 git_diffview [revision-range]
 git_diffview working-tree
+git_diffview commit <ref>
 git_diffview file <path>
 git_diffview history
 git_diffview close
